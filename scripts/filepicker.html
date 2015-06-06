@@ -1,0 +1,45 @@
+<!-- This CSS package applies Google styling; it should always be included. -->
+<link rel="stylesheet" href="https://ssl.gstatic.com/docs/script/css/add-ons1.css">
+
+<!-- my local styles -->
+<?!= HtmlService.createHtmlOutputFromFile('App.css').getContent(); ?>
+<?!= HtmlService.createHtmlOutputFromFile('Home.css').getContent(); ?>
+
+
+<!-- Page content -->
+<div id="container">
+
+  <div class="block"> 
+    <label for="chart-code-svg">Chart SVG embed code</label><br>
+    <input type="text" id="chart-code-svg" class="width-100" disabled>
+
+  </div>
+
+  <div class="block">
+    <label for="filename-svg">SVG file name</label><br>
+    <input type="text" id="filename-svg">
+
+    <span id="write-result" style="display:none;">
+      <a id="filename-url" target="_blank">
+        <img class="middle" 
+          src="https://googledrive.com/host/0B92ExLh4POiZfkZsSDMwaHZUV3hneWdEbVV5aWVqenpWNjYtc29oYUZyYzVKVE50eFBMQm8/web.svg"/>
+      </a>
+      <a id="filename-link" target="_blank">
+        <img class="middle" 
+          src="https://googledrive.com/host/0B92ExLh4POiZfkZsSDMwaHZUV3hneWdEbVV5aWVqenpWNjYtc29oYUZyYzVKVE50eFBMQm8/google-drive.svg"/>
+      </a>
+    </span>
+    
+  </div>
+  <div class="block">
+    <button class="action" id="save-button">Save to Drive</button>
+    <button onclick="google.script.host.close()">Close</button>
+  </div>
+
+</div>
+
+<script type="text/javascript" src="https://apis.google.com/js/client.js"></script>
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<?!= requireGs(['App', 'Picker','Utils']);  ?>
+<?!= requireJs(['FilePicker']);  ?>
+
