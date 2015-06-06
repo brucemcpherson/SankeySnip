@@ -1,0 +1,89 @@
+<!-- This CSS package applies Google styling; it should always be included. -->
+<link rel="stylesheet" href="https://ssl.gstatic.com/docs/script/css/add-ons1.css">
+
+<!-- my local styles -->
+<?!= HtmlService.createHtmlOutputFromFile('App.css').getContent(); ?>
+<?!= HtmlService.createHtmlOutputFromFile('Home.css').getContent(); ?>
+
+
+<!-- Page content -->
+<div id="container">
+
+  <div class="block">
+    <div class="title">Data source</div>
+    <div class="centralize">
+        <label><input type="radio" name="input-data-type" id="input-data-type-whole" checked>Sheet </label>
+        <label><input type="radio" name="input-data-type" id="input-data-type-selection">Selected area</label>
+    </div>
+    <div class="sep"></div>
+  </div>
+
+  
+  <div class="section">
+    <div class="title">Column names with input data</div>
+      
+      <div class="centralize">
+        <label for="from-column">From</label>
+        <span style="float:right">
+          <select  id="from-column" name="from-column">
+          </select>
+        </span>
+      </div>
+      
+      <div class="centralize">
+        <label for="to-column">To</label>
+        <span style="float:right">
+          <select  id="to-column" name="to-column">
+          </select>
+        </span>     
+      </div>
+      
+      <div class="centralize">
+        <label for="value-column">Value</label>
+        <span style="float:right">
+          <select  id="value-column" name="value-column">
+          </select>
+        </span> 
+      </div>
+      
+      <div class="sep"></div>
+  
+  </div>
+   
+  <div id="content-main" class="section"> 
+    <span class="title">Chart preview
+      <img id="settings-button" class="middle" 
+        src="https://googledrive.com/host/0B92ExLh4POiZfkZsSDMwaHZUV3hneWdEbVV5aWVqenpWNjYtc29oYUZyYzVKVE50eFBMQm8/settings.svg"/>
+    </span>
+    <div id="chart" class="chart centralize"></div>
+    <div class="sep"></div>
+  </div>
+  
+  <div class="section"> 
+    <span class="title">Chart SVG embed code
+      <img id="save-button" class="middle" 
+        src="https://googledrive.com/host/0B92ExLh4POiZfkZsSDMwaHZUV3hneWdEbVV5aWVqenpWNjYtc29oYUZyYzVKVE50eFBMQm8/google-drive.svg"/>
+    </span>
+    <input type="text" id="chart-code-svg" class="centralize" disabled>
+  </div>
+
+</div>
+
+<div id="settings" class="hidden">
+  <div class="title">Chart preview settings</div>
+  <table id="settings-table"></table>
+  <br>
+  <button id="close-settings-button" class="action">Apply</button>
+  <button id="cancel-settings-button">Cancel</button>
+</div>
+
+
+
+<div id="ghost" class="ghost"></div>
+
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+
+<?!= requireGsManifest('sankeysnip');  ?>
+<?!= requireJsManifest('js');  ?>
+
+
