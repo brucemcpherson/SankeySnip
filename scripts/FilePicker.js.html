@@ -9,7 +9,9 @@ function doIt(data) {
       
       // fill with svg code
       Utils.el("chart-code-svg").value =  data.content;
+      Utils.el("picker-preview").innerHTML = data.pickerContent;
       Utils.el("filename-svg").value = Picker.settings.defaultSVGName;
+      
       
       // kick off picker
       Utils.el('save-button').addEventListener('click', function () {
