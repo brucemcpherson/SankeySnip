@@ -1,6 +1,6 @@
 var manifests = [
   { name: 'sankeysnip',
-   scripts: ['Utils', 'Sankey' , 'Process' , 'View' ,'Home' ,'App', 'Client']
+   scripts: ['Utils', 'Sankey' , 'Process' , 'View' ,'Home' ,'App', 'Client','CanvasConvert']
   },
   { name: 'js',
     scripts:['main']
