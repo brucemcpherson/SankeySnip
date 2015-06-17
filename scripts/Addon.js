@@ -7,7 +7,7 @@
 function onOpen(e) {
   SpreadsheetApp.getUi()
       .createAddonMenu()
-      .addItem('SankeySnip', 'showSankeySnip')
+      .addItem('Create Sankey Chart', 'showSankeySnip')
       .addToUi();
 }
 
@@ -39,7 +39,7 @@ function showSankeySnip() {
 * Opens a picker dialog
 * will be kicked off as google.script.run from the sidebar
 */
-function showPicker(content) {
+function showPicker(content,pickerContent) {
 
   var html = HtmlService.createTemplateFromFile('filepicker.html')
     .evaluate()
@@ -49,6 +49,7 @@ function showPicker(content) {
     HtmlService.createTemplate(html + "<script>\ndoIt(" +
       JSON.stringify({
         "content":content,
+        "pickerContent":pickerContent,
         "token": ScriptApp.getOAuthToken(),
         "key":'AIzaSyA2VcAc8N7EGAxgh4Tr1qJL_F27yuh4rx0'
       }) +
@@ -58,7 +59,7 @@ function showPicker(content) {
       .setHeight(Picker.settings.height)
       .setSandboxMode(HtmlService.SandboxMode.IFRAME);
 
-   SpreadsheetApp.getUi().showModalDialog(uiContent, "Saving svg code");
+   SpreadsheetApp.getUi().showModalDialog(uiContent, "Save svg code");
 }
 
 
