@@ -9,11 +9,13 @@
 <!-- Page content -->
 <div id="container">
 
+  <div id="picker-preview" class="chart-picker-preview centralize"></div>
   <div class="block"> 
     <label for="chart-code-svg">Chart SVG embed code</label><br>
     <input type="text" id="chart-code-svg" class="width-100" disabled>
 
   </div>
+
 
   <div class="block">
     <label for="filename-svg">SVG file name</label><br>
@@ -40,6 +42,7 @@
 
 <script type="text/javascript" src="https://apis.google.com/js/client.js"></script>
 <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-<?!= requireGs(['App', 'Picker','Utils']);  ?>
+
+<?!= requireGs(['App', 'Picker','Utils','CanvasConvert','Client']);  ?>
 <?!= requireJs(['FilePicker']);  ?>
 
