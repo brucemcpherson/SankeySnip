@@ -1,5 +1,5 @@
 <!-- This CSS package applies Google styling; it should always be included. -->
-<link rel="stylesheet" href="https://ssl.gstatic.com/docs/script/css/add-ons1.css">
+<link rel="stylesheet" href="https://ssl.gstatic.com/docs/script/css/add-ons.css">
 
 <!-- my local styles -->
 <?!= HtmlService.createHtmlOutputFromFile('App.css').getContent(); ?>
@@ -8,80 +8,76 @@
 
 <!-- Page content -->
 <div id="container">
-
-  <div class="block">
-    <div class="title">Data source</div>
-    <div class="centralize">
-        <label><input type="radio" name="input-data-type" id="input-data-type-whole" checked>Sheet </label>
-        <label><input type="radio" name="input-data-type" id="input-data-type-selection">Selected area</label>
-    </div>
-    <div class="sep"></div>
-  </div>
-
   
-  <div class="section">
-    <div class="title">Column names with input data</div>
-      
-      <div class="centralize">
-        <label for="from-column">From</label>
+  <div class="title">Sankey Chart data source</div>
+  
+  <table class="centralize">
+    <tr>
+      <td style="width:50%"><label><input type="radio" name="input-data-type" id="input-data-type-whole" checked>Whole Sheet</label></td>
+      <td style="width:50%"><label><input type="radio" name="input-data-type" id="input-data-type-selection">Selected Range</label></td>
+    </tr>
+  </table>
+
+      <div class="centralize block">
+        <label for="from-column">From column</label>
         <span style="float:right">
           <select  id="from-column" name="from-column">
           </select>
         </span>
       </div>
       
-      <div class="centralize">
-        <label for="to-column">To</label>
+      <div class="centralize block">
+        <label for="to-column">To column</label>
         <span style="float:right">
           <select  id="to-column" name="to-column">
           </select>
         </span>     
       </div>
       
-      <div class="centralize">
-        <label for="value-column">Value</label>
+      <div class="centralize block">
+        <label for="value-column">Weight column</label>
         <span style="float:right">
           <select  id="value-column" name="value-column">
           </select>
         </span> 
       </div>
-      
-      <div class="sep"></div>
-  
-  </div>
-   
-  <div id="content-main" class="section"> 
-    <span class="title">Chart preview
-      <img id="settings-button" class="middle" 
-        src="https://googledrive.com/host/0B92ExLh4POiZfkZsSDMwaHZUV3hneWdEbVV5aWVqenpWNjYtc29oYUZyYzVKVE50eFBMQm8/settings.svg"/>
-    </span>
+ 
+  <div id="content-main" class="block"> 
+    <span class="title">Chart preview</span>
     <div id="chart" class="chart centralize"></div>
-    <div class="sep"></div>
-  </div>
-  
-  <div class="section"> 
-    <span class="title">Chart SVG embed code
-      <img id="save-button" class="middle" 
-        src="https://googledrive.com/host/0B92ExLh4POiZfkZsSDMwaHZUV3hneWdEbVV5aWVqenpWNjYtc29oYUZyYzVKVE50eFBMQm8/google-drive.svg"/>
-    </span>
-    <input type="text" id="chart-code-svg" class="centralize" disabled>
-  </div>
+  </div> 
 
+  <table class="centralize">
+    <tr>
+      <td><button class="action" id="save-button">Save</button></td>
+      <td><button id="insert-button">Insert</button></td>
+      <td><button id="settings-button">Settings</button></td>
+    </tr>
+  </table>
+  
+
+</div>
+
+<div id="spinner" class="spinner">
+    <img src="https://googledrive.com/host/0B92ExLh4POiZfkZsSDMwaHZUV3hneWdEbVV5aWVqenpWNjYtc29oYUZyYzVKVE50eFBMQm8/ajax-loader.gif"/>
 </div>
 
 <div id="settings" class="hidden">
   <div class="title">Chart preview settings</div>
-  <table id="settings-table"></table>
+  <table id="settings-table" class="centralize"></table>
+  
   <br>
   <button id="close-settings-button" class="action">Apply</button>
   <button id="cancel-settings-button">Cancel</button>
 </div>
 
-
-
+<div id="picker-preview" class="hidden"></div>
 <div id="ghost" class="ghost"></div>
-
+<div id="picker-code-svg" class="hidden"></div>
+<div id="chart-code-svg" class="hidden"></div>
 <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/amcharts/3.13.0/exporting/canvg.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/amcharts/3.13.0/exporting/rgbcolor.js"></script>
 
 <?!= requireGsManifest('sankeysnip');  ?>
 <?!= requireJsManifest('js');  ?>
