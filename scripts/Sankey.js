@@ -16,15 +16,21 @@ var Sankey = (function(sankey) {
         if(clear) {
           chartElem.innerHTML = "";
         }
-        
+
         // this might fail since we could pick up the data at any point - but that's ok
         try {
+        
+          // dont let the from and to field be the same
+          if (headers[0] === headers[1]) return;
+        
           // assuming the data is all clean here
           var dataTable = new google.visualization.DataTable();
           
           dataTable.addColumn ('string' , headers[0]);
           dataTable.addColumn ('string' , headers[1]);	
           dataTable.addColumn ('number' , headers[2]);
+          
+
           
           // assign data - be lenient with mismatched data types
           dataTable.addRows(data.map(function(d) {
