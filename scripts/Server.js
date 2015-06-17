@@ -14,10 +14,17 @@ function getData (checksum,useSelection) {
 * @param {string} content the content
 */
 
-function startPicker (content) {
-  showPicker(content);
+function startPicker (content,pickerContent) {
+  showPicker(content,pickerContent);
 }
 
+/**
+ * called to insert an image in the sheet
+ * @param {string} png b64 encoded image
+ */
+function insertImage (png) {
+  return Image.place(png);
+}
 // namespace set up
 
 var Server =  (function(server) {
