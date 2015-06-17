@@ -32,12 +32,15 @@ var Process = (function (process) {
           headings:[],
           data:[[]],
           elem:Utils.el("chart"),
-          ghost:Utils.el("ghost")
+          ghost:Utils.el("ghost"),
+          picker:Utils.el("picker-preview")
         },
         
         code: {
-          svg:Utils.el("chart-code-svg")
-          
+          svg:Utils.el("chart-code-svg"),
+          picker:Utils.el("picker-code-svg"),
+          pickerHeight:520*.7,
+          pickerWidth:600*.9
         },
         
         buttons: {
@@ -67,9 +70,26 @@ var Process = (function (process) {
         // the preview
         Sankey.drawChart (Sankey.settings , sc.headings, sc.data, sc.elem, clear);
         
+        // the full sized
+        svg = scaleChart(clear);
+        process.control.code.svg.value =  (svg && svg.length ? svg[0] : '');
+        
+        // the picker sized
+        svg = scaleChart(clear, {
+          width:   process.control.code.pickerWidth / sc.elem.offsetWidth , 
+          height:  process.control.code.pickerHeight / sc.elem.offsetHeight,
+          font:  process.control.code.pickerHeight / sc.elem.offsetHeight
+        } );
+        
+        process.control.code.picker.value = (svg && svg.length ? svg[0] : '');
+       
+      }
+      
+      function scaleChart(clear, divScale) {
+        
         // scale up the real one
         var big = Utils.clone(Sankey.settings);
-        var scale = Sankey.settings.scale;
+        var scale = divScale || big.scale;
         
         big.height = Sankey.settings.height * scale.height;
         big.width = Sankey.settings.width * scale.width;
@@ -77,12 +97,13 @@ var Process = (function (process) {
         big.sankey.node.labelPadding = Sankey.settings.sankey.node.labelPadding * scale.width;
         big.sankey.node.nodePadding = Sankey.settings.sankey.node.nodePadding * scale.height;
         big.sankey.node.width = Sankey.settings.sankey.node.width * scale.height;
-
+        
         Sankey.drawChart (big , sc.headings, sc.data, sc.ghost, clear);
         // set up svg code for copying
-        svg = sc.ghost.innerHTML.match(/\<svg.*svg\>/);
-        process.control.code.svg.value =  (svg && svg.length ? svg[0] : '');
+        return sc.ghost.innerHTML.match(/\<svg.*svg\>/);
+        
       }
+      
       
       process.control.buttons.save.disabled =  !svg; 
       
