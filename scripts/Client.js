@@ -28,8 +28,31 @@ var Client = (function(client) {
       })
       .withSuccessHandler(function (result) {
       })
-      .startPicker(Process.control.code.svg.value);
+      .startPicker(Process.control.code.svg.value,Process.control.code.picker.value);
+  };
+  
+  client.insertImage = function (png) {
+  
+    spinCursor();
+    
+    google.script.run
+      .withFailureHandler(function(error) {
+        resetCursor();
+        App.showNotification ("Failed to insert image", error);
+      })
+      .withSuccessHandler(function (result) {
+        resetCursor();
+      })
+      .insertImage(png);
+  };
+  
+  function resetCursor() {
+    Utils.el ('spinner').style.display = "none";
   }
+  function spinCursor() {
+    Utils.el ('spinner').style.display = "block";
+  }
+
   
   return client;
   
