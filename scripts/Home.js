@@ -28,6 +28,17 @@ var Home = (function (home) {
       Process.drawChart();
     },false);
     
+    // insert in sheet
+    Utils.el('insert-button').addEventListener('click', function () {    
+        // convert to png and ask the server to do it
+        try {
+          Client.insertImage ( CanvasConvert.svgToPng (Process.control.code.picker.value));
+        }
+        catch (err) {
+          App.showNotification ('Converting image to PNG format', err);
+        }
+    });
+      
     // drop downs for field names
     Object.keys(Process.control.activeHeadings).forEach (function (k) {
       Process.control.activeHeadings[k].elem.addEventListener ('change' , function () {
