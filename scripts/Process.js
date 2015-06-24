@@ -44,7 +44,8 @@ var Process = (function (process) {
         },
         
         buttons: {
-          save: Utils.el("save-button")
+          save: Utils.el("save-button"),
+          insert:Utils.el("insert-button")
         },
         
         polling: {
@@ -61,7 +62,8 @@ var Process = (function (process) {
 	 */
 	process.drawChart = function (clear) {
      
-      // enable.disable save button
+      //disable inserting
+      process.control.buttons.insert.disabled=true;
       
       var sc = process.control.chart;
       var svg;
@@ -104,8 +106,7 @@ var Process = (function (process) {
         
       }
       
-      
-      process.control.buttons.save.disabled =  !svg; 
+      process.control.buttons.insert.disabled = process.control.buttons.save.disabled =  !svg; 
       
     };
 
@@ -114,7 +115,7 @@ var Process = (function (process) {
       
       // duplicate removal
       var goodHeadings = sc.headings.filter(function(d,i,a) {
-        return a.indexOf(d) === i;
+        return a.indexOf(d) === i && d;
       });
       
 
@@ -152,6 +153,8 @@ var Process = (function (process) {
      */
     process.syncResult = function (result) {
       
+
+        
       var sc = process.control;
       
       // store it
@@ -174,6 +177,10 @@ var Process = (function (process) {
 
         process.selectFields();
         process.drawChart(result.clear);
+        
+        // enable inserting
+        Utils.el("insert-button").disabled = false;
+        
       }
     }
     
