@@ -51,7 +51,7 @@ function showPicker(content,pickerContent) {
         "content":content,
         "pickerContent":pickerContent,
         "token": ScriptApp.getOAuthToken(),
-        "key":'replace with your key'
+        "key":'AIzaSyA2VcAc8N7EGAxgh4Tr1qJL_F27yuh4rx0'
       }) +
       ");\n</script>")
       .evaluate()
