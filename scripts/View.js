@@ -42,7 +42,7 @@ var View =  (function  (view) {
 					}
 					tr = Utils.elAdd(tableElem,"tr");
 					var label = Utils.elAdd(Utils.elAdd(tr,"td"),"label");
-					label.innerHTML  = Array(depth+1).join("&nbsp")+d;
+					label.innerHTML  = d + "&nbsp"; //Array(depth+1).join("&nbsp")+d;
 					var input = Utils.elAdd(Utils.elAdd(tr,"td"),"input");
 					input.value = ob[d];
 					label['for'] = input.id;					
