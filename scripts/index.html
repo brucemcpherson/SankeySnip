@@ -1,95 +1,15 @@
-<!-- This CSS package applies Google styling; it should always be included. -->
-<link rel="stylesheet" href="https://ssl.gstatic.com/docs/script/css/add-ons.css">
+<!DOCTYPE html>
+<html>
+  <head>
+  <base target="_top">
+    <?!= Include.html(['cdn.css']); ?>
+    <?!= Include.css(['spinner','App']); ?>  
+  </head>
+  <body>
+   
+    <?!= Include.html(['appmarkup','cdn']); ?>  
+    <?!= Include.js(['main']); ?>
+    <?!= Include.gs(['Elementer','Utils', 'Sankey' , 'Process' , 'View' ,'Home' ,'App', 'Client','CanvasConvert','DomUtils','Provoke']); ?>
 
-<!-- my local styles -->
-<?!= HtmlService.createHtmlOutputFromFile('App.css').getContent(); ?>
-<?!= HtmlService.createHtmlOutputFromFile('Home.css').getContent(); ?>
-
-
-<!-- Page content -->
-<div id="container">
-  
-  <span class="title" style="vertical-align:middle;" >Sankey Chart data source 
-    <a href="http://ramblings.mcpher.com/Home/excelquirks/addons/sankeyaddon" target="_blank">
-    <img class="imghover" style="vertical-align:middle" 
-    src="https://googledrive.com/host/0B92ExLh4POiZfkZsSDMwaHZUV3hneWdEbVV5aWVqenpWNjYtc29oYUZyYzVKVE50eFBMQm8/information-outline.svg"/>
-    </a>
-  </span>
-
-  
-  <table class="centralize">
-    <tr>
-      <td style="width:50%"><label><input type="radio" name="input-data-type" id="input-data-type-whole" checked>Whole Sheet</label></td>
-      <td style="width:50%"><label><input type="radio" name="input-data-type" id="input-data-type-selection">Selected Range</label></td>
-    </tr>
-  </table>
-
-      <div class="centralize block">
-        <label for="from-column">From column</label>
-        <span style="float:right">
-          <select  id="from-column" name="from-column">
-          </select>
-        </span>
-      </div>
-      
-      <div class="centralize block">
-        <label for="to-column">To column</label>
-        <span style="float:right">
-          <select  id="to-column" name="to-column">
-          </select>
-        </span>     
-      </div>
-      
-      <div class="centralize block">
-        <label for="value-column">Weight column</label>
-        <span style="float:right">
-          <select  id="value-column" name="value-column">
-          </select>
-        </span> 
-      </div>
- 
-  <div id="content-main" class="block"> 
-    <span class="title">Chart preview</span>
-    <div id="chart" class="chart centralize"></div>
-  </div> 
-  <br>
-  <table class="centralize">
-    <tr>
-      <td><button class="action"  id="save-button">Save</button></td>
-      <td style="text-align:center;" ><button id="insert-button" disabled>Insert</button></td>
-      <td style="text-align:right;"><button id="settings-button">Settings</button></td>
-    </tr>
-  </table>
-  
-
-</div>
-
-<div id="spinner" class="spinner">
-    <img src="https://googledrive.com/host/0B92ExLh4POiZfkZsSDMwaHZUV3hneWdEbVV5aWVqenpWNjYtc29oYUZyYzVKVE50eFBMQm8/ajax-loader.gif"/>
-</div>
-
-<div id="settings" class="hidden">
-  <span class="title" style="vertical-align:middle;" >Chart preview settings 
-    <a href="https://developers.google.com/chart/interactive/docs/gallery/sankey" target="_blank">
-    <img class="imghover" style="vertical-align:middle" src="https://googledrive.com/host/0B92ExLh4POiZfkZsSDMwaHZUV3hneWdEbVV5aWVqenpWNjYtc29oYUZyYzVKVE50eFBMQm8/information-outline.svg"/>
-    </a>
-  </span>
-  <table id="settings-table" class="centralize"></table>
-  
-  <br>
-  <button id="close-settings-button" class="action">Apply</button>
-  <button id="cancel-settings-button">Cancel</button>
-</div>
-
-<div id="picker-preview" class="hidden"></div>
-<div id="ghost" class="ghost"></div>
-<div id="picker-code-svg" class="hidden"></div>
-<div id="chart-code-svg" class="hidden"></div>
-<script type="text/javascript" src="https://www.google.com/jsapi"></script>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/amcharts/3.13.0/exporting/canvg.js"></script>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/amcharts/3.13.0/exporting/rgbcolor.js"></script>
-
-<?!= requireGsManifest('sankeysnip');  ?>
-<?!= requireJsManifest('js');  ?>
-
-
+  </body>
+</html>
