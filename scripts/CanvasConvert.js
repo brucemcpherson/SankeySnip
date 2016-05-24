@@ -5,7 +5,6 @@ var CanvasConvert = (function(canvasConvert) {
   
     // create a canvas to use, no need to actually assign it to a parent
     var canvas = document.createElement("canvas");
-    
     // plot it on a canvas
     canvg ( canvas , svg);
 
