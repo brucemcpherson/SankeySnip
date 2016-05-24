@@ -1,200 +1,283 @@
-// stuff that is common to both Apps Script and Office
-
-
-
-// define it
+/**
+* manages the connection between the data and the chart
+* @namespace Process
+*/
 var Process = (function (process) {
-	'use strict';
+  'use strict';
+  
+  process.globals = {
+    resetProperty:"ssnipSettings",
+    purchaseLevel:'ssnipLevel',
+    fullAccess:10,
+    openAccess:true
+  };
+  
+  process.applyElementer  = function () {
+    var before = Utils.clone (process.control.sankey.settings);
+    process.control.sankey.settings =  Sankey.mapSettings (process.control.sankey.elementer);
+    return JSON.stringify(before) !== JSON.stringify(process.control.sankey.settings);
+  };
+  
+  
+  process.initialize = function () {
+    
+    var sankeySetup = Sankey.setup();
+    
+    // this will create the structure for retrieving settings
+    var elementer = Sankey.doElementer(sankeySetup);
+    var elements = elementer.getElements();
+    
+    
+    process.control = {
+      result: {
+        data:undefined, 
+        checksum:undefined
+      },
+      sankey:{
+        setup:sankeySetup,
+        elementer:elementer,
+        settings:{},
+        store:{
+          useInitial:null,
+          useStandard:null,
+          useUser:null,
+          useDocument:null
+        },
+        auth:{}
+      },
 
-    process.initialize = function () {
-      process.control = {
-        result: {
-          data:undefined, 
-          checksum:undefined
+      activeHeadings: {
+        from:{
+          current:'from',
+          elem:elements.controls.fromColumn
         },
-        
-        activeHeadings: {
-          from:{
-            current:'from',
-            elem:Utils.el('from-column')
-          },
-          to: {
-            current:'to',
-            elem:Utils.el('to-column')
-          },
-          value:{
-            current:'value',
-            elem:Utils.el('value-column')
-          }
+        to: {
+          current:'to',
+          elem:elements.controls.toColumn
         },
-        
-        chart: {
-          headings:[],
-          data:[[]],
-          elem:Utils.el("chart"),
-          ghost:Utils.el("ghost"),
-          picker:Utils.el("picker-preview")
-        },
-        
-        code: {
-          svg:Utils.el("chart-code-svg"),
-          picker:Utils.el("picker-code-svg"),
-          pickerHeight:520*.7,
-          pickerWidth:600*.9
-        },
-        
-        buttons: {
-          save: Utils.el("save-button"),
-          insert:Utils.el("insert-button")
-        },
-        
-        polling: {
-          interval:2000,
+        value:{
+          current:'value',
+          elem:elements.controls.weightColumn
         }
-        
-      };
+      },
       
-    };
-    
-	/**
-	 * draw a sankey chart from the matrix data
-     * @param {boolean} clear whether to clear current chart first
-	 */
-	process.drawChart = function (clear) {
-     
-      //disable inserting
-      process.control.buttons.insert.disabled=true;
+      chart: {
+        headings:[],
+        data:[[]],
+        elem:DomUtils.elem("chart"),
+        ghost:DomUtils.elem("ghost"),
+        defOptions:{
+          height:DomUtils.elem("chart").offsetHeight,
+          width:DomUtils.elem("chart").offsetWidth
+        }
+      },
       
-      var sc = process.control.chart;
-      var svg;
+      code: {
+        svg:elements.controls.svgCode
+      },
       
-      if (sc.data.length) {
-        // the preview
-        Sankey.drawChart (Sankey.settings , sc.headings, sc.data, sc.elem, clear);
-        
-        // the full sized
-        svg = scaleChart(clear);
-        process.control.code.svg.value =  (svg && svg.length ? svg[0] : '');
-        
-        // the picker sized
-        svg = scaleChart(clear, {
-          width:   process.control.code.pickerWidth / sc.elem.offsetWidth , 
-          height:  process.control.code.pickerHeight / sc.elem.offsetHeight,
-          font:  process.control.code.pickerHeight / sc.elem.offsetHeight
-        } );
-        
-        process.control.code.picker.value = (svg && svg.length ? svg[0] : '');
-       
+      buttons: {
+        insert:elements.controls.insertButton,
+        manage:elements.controls.manageButton,
+        apply:elements.controls.applyButton,
+        selectedRange:elements.controls.selectedRange,
+        wholeSheet:elements.controls.wholeSheet
+      },
+      
+      polling: {
+        interval:2500,
+      },
+      
+      toast: {
+        interval:4000
       }
-      
-      function scaleChart(clear, divScale) {
-        
-        // scale up the real one
-        var big = Utils.clone(Sankey.settings);
-        var scale = divScale || big.scale;
-        
-        big.height = Sankey.settings.height * scale.height;
-        big.width = Sankey.settings.width * scale.width;
-        big.sankey.node.label.fontSize = Sankey.settings.sankey.node.label.fontSize * scale.font;
-        big.sankey.node.labelPadding = Sankey.settings.sankey.node.labelPadding * scale.width;
-        big.sankey.node.nodePadding = Sankey.settings.sankey.node.nodePadding * scale.height;
-        big.sankey.node.width = Sankey.settings.sankey.node.width * scale.height;
-        
-        Sankey.drawChart (big , sc.headings, sc.data, sc.ghost, clear);
-        // set up svg code for copying
-        return sc.ghost.innerHTML.match(/\<svg.*svg\>/);
-        
-      }
-      
-      process.control.buttons.insert.disabled = process.control.buttons.save.disabled =  !svg; 
       
     };
 
-    process.selectFields = function () {
-      var sc = process.control;
+    // get and apply any stored properties  
+    return new Promise (function (resolve, reject) {
       
-      // duplicate removal
-      var goodHeadings = sc.headings.filter(function(d,i,a) {
-        return a.indexOf(d) === i && d;
-      });
-      
-
-      // make active headings/ deleting them if not there, along with the chart headings
-      sc.chart.headings = Object.keys(sc.activeHeadings).map (function(k,i) {
+      Provoke.run ('Props','getAll')
+      .then( function (result) {
+        var pc = Process.control.sankey.store;
         
-        // the object describing each data column
-        var d = sc.activeHeadings[k];
+        // the factory settings
+        pc.useStandard = elementer.getStandard();
+        pc.auth = result.auth;
         
-        // set to the currently selected value
-        d.current = d.elem.value || d.current;
-
-        // default to positional if we cant find a match .. this would be first time round
-        if (goodHeadings.indexOf(d.current) === -1) d.current = goodHeadings.length > i ? goodHeadings[i] : undefined; 
-
-        
-        // redo the select options
-        d.current = View.buildSelectElem (goodHeadings , d.elem , d.current);
-
-        
-        return d.current;
-        
-      });
-      
-      // make the chart data
-      sc.chart.data = sc.dataObjects.map (function (row) {
-        return sc.chart.headings.map(function(d) {
-          return row[d];
+        // any data found in property stores
+        result.saved.forEach(function(d) {
+          pc[d.source] = d.settings; 
+          elements.controls[d.source].disabled = d.settings ? false : true;
+          if (d.settings) {
+            elementer.setInitial (d.settings);
+          }
         });
+        
+        
+        // the finally decided upon initial values
+        pc.useInitial = elementer.getInitial();
+        
+        // map the values 
+        process.applyElementer();
+        resolve (elementer);
+      })
+      ['catch'](function (err) {
+        App.showNotification ("failed while getting saved properties ", err);
+        reject (err);
       });
-    }
-    /**
-     * fix up and store data received from server
-     * @param {object} result the result
-     */
-    process.syncResult = function (result) {
-      
+    });
 
-        
-      var sc = process.control;
+  };
+  
+  /**
+  * draw a sankey chart from the matrix data
+  * @param {boolean} clear whether to clear current chart first
+  */
+  process.drawChart = function (clear) {
+    
+    //disable inserting
+    process.control.buttons.insert.disabled  = false;
+    
+    var sc = process.control.chart;
+    var sts = process.control.sankey.settings;
+    var opt = Utils.vanMerge([sc.defOptions, sts.options]);
+    
+    var svg;
+    
+    if (sc.data.length) {
       
-      // store it
-      sc.result = result;
+      opt.height = opt.height || sc.defOptions.height;
+      opt.width = opt.width || sc.defOptions.width;
       
-      // make the headings
-      if (result.data && (result.data.length || result.clear)) {
-        
-        sc.headings = result.data.length ? result.data[0] : [];
-        sc.data = result.data.length > 1 ? result.data.slice(1) : [];
-        
-        // make the data into k.v pairs
-        sc.dataObjects = sc.data.map(function (row) {
-          var i = 0;
-          return sc.headings.reduce (function (p,c) {
-            p[c] = row[i++];
-            return p;
-          },{});
-        });
+      // the preview
+      Sankey.drawChart (opt , sc.headings, sc.data, sc.elem, clear);
+      
+      // the full sized chart
+      svg = scaleChart(clear);
+      process.control.code.svg.value =  (svg && svg.length ? svg[0] : '');
 
-        process.selectFields();
-        process.drawChart(result.clear);
-        
-        // enable inserting
-        Utils.el("insert-button").disabled = false;
-        
-      }
+      
     }
     
-
-    
-    /**
-     * every now and again, go and get the latest data
-     */
-    process.startPolling = function () {
-      setTimeout(function(){ 
-        Client.getData();
-      }, process.control.polling.interval);
+    function scaleChart(clear, divScale) {
+      
+      // scale up the real one
+      var big = Utils.clone(sts);
+      var scale = divScale || big.scale;
+      
+      var big = Utils.vanMerge([opt, {
+        height: opt.height * scale.height,
+        width: opt.width * scale.width,
+        sankey: {
+        node: {
+        label: {
+        fontSize: opt.sankey.node.label.fontSize * scale.font
+      },
+                                labelPadding: opt.sankey.node.labelPadding * scale.width,
+                                nodePadding: opt.sankey.node.nodePadding * scale.height,
+                                width: opt.sankey.node.width * scale.width
+                                }
+                                }
+                                }]);
+      
+      
+      
+      Sankey.drawChart (big , sc.headings, sc.data, sc.ghost, clear);
+      // set up svg code for copying
+      return sc.ghost.innerHTML.match(/\<svg.*svg\>/);
+      
     }
     
-    return process;
-	
+    process.control.buttons.insert.disabled  =  !svg; 
+    
+  };
+  
+  process.selectFields = function () {
+    var sc = process.control;
+    
+    // duplicate removal
+    var goodHeadings = sc.headings.filter(function(d,i,a) {
+      return a.indexOf(d) === i && d;
+    });
+    
+    
+    // make active headings/ deleting them if not there, along with the chart headings
+    sc.chart.headings = Object.keys(sc.activeHeadings).map (function(k,i) {
+      
+      // the object describing each data column
+      var d = sc.activeHeadings[k];
+      
+      // set to the currently selected value
+      d.current = d.elem.value || d.current;
+      
+      // default to positional if we cant find a match .. this would be first time round
+      if (goodHeadings.indexOf(d.current) === -1) d.current = goodHeadings.length > i ? goodHeadings[i] : undefined; 
+      
+      
+      // redo the select options
+      d.current = View.buildSelectElem (goodHeadings , d.elem , d.current);
+      
+      
+      return d.current;
+      
+    });
+    
+    // make the chart data
+    sc.chart.data = sc.dataObjects.map (function (row) {
+      return sc.chart.headings.map(function(d) {
+        return row[d];
+      });
+    });
+  }
+  /**
+  * fix up and store data received from server
+  * @param {object} result the result
+  */
+  process.syncResult = function (result) {
+    
+    
+    
+    var sc = process.control;
+    
+    // store it
+    sc.result = result;
+    
+    // make the headings
+    if (result.data && (result.data.length || result.clear)) {
+      
+      sc.headings = result.data.length ? result.data[0] : [];
+      sc.data = result.data.length > 1 ? result.data.slice(1) : [];
+      
+      // make the data into k.v pairs
+      sc.dataObjects = sc.data.map(function (row) {
+        var i = 0;
+        return sc.headings.reduce (function (p,c) {
+          p[c] = row[i++];
+          return p;
+        },{});
+      });
+      
+      process.selectFields();
+      process.drawChart(result.clear);
+      
+      // enable inserting
+      process.control.buttons.insert.disabled = false;
+      
+    }
+  }
+  
+  
+  
+  /**
+  * every now and again, go and get the latest data
+  */
+  process.startPolling = function () {
+    setTimeout(function(){ 
+      Client.getData(true);
+    }, process.control.polling.interval);
+  }
+  
+  return process;
+  
 })( Process || {} );
