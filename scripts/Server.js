@@ -1,37 +1,25 @@
-
 /**
-* called to return latest active sheet data
-* @param {number} checksum the checksum for the last data we got
-* @param {boolean} useSelection where to use acrive selection - default is use the whole page
-* @return {object} object with new checksum and potentially the data if anything has changed
+* used to expose memebers of a namespace
+* @param {string} namespace name
+* @param {method} method name
 */
-function getData (checksum,useSelection) {
-  return Server.getData (checksum,useSelection);
+function exposeRun (namespace, method , argArray ) {
+  var func = (namespace ? this[namespace][method] : this[method])
+  if (argArray && argArray.length) {
+    return func.apply(this,argArray);
+  }
+  else {
+    return func();
+  }
 }
 
-/**
-* called to display a dialog and save content
-* @param {string} content the content
-*/
 
-function startPicker (content,pickerContent) {
-  showPicker(content,pickerContent);
-}
 
-/**
- * called to insert an image in the sheet
- * @param {string} png b64 encoded image
- */
-function insertImage (png) {
-  return Image.place(png);
-}
 // namespace set up
-
 var Server =  (function(server) {
-
   /**
   * get the data from the active sheet
-  * @param {number} previousChecksum if its the same then no point in returning any data
+  * @param {string} previousChecksum if its the same then no point in returning any data
   * @param {boolean} useSelection where to use acrive selection - default is use the whole page
   * @return {[[]]} sheet data
   */
@@ -40,7 +28,7 @@ var Server =  (function(server) {
     var range = useSelection ? SpreadsheetApp.getActiveRange() : sheet.getDataRange();
     var data = range.getValues();
     var p = {id:sheet.getSheetId(), range:range.getA1Notation() , data:range.getValues() };
-    var thisChecksum = Utils.checksum (p);
+    var thisChecksum = Utils.keyDigest (p);
     
     return {
       checksum :thisChecksum,
