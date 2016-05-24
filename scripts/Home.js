@@ -1,44 +1,129 @@
 
 var Home = (function (home) {
-	'use strict';
+  'use strict';
   
+  var ns = home;
+
   // The initialize function must be run to activate elements
-  home.initialize = function (reason) {
-    
-    
-    // show settings for modification
-    Utils.el('settings-button').addEventListener ( 'click', function () {      
-	  Utils.hide(Utils.el("container"));
-	  Utils.show(Utils.el("settings"));
-      home.settings = Utils.clone(Sankey.settings);
-      View.makeOptions(home.settings);
-    },false);
-    
-    // give up on setting changes
-    Utils.el('cancel-settings-button').addEventListener ('click' , function () {
-      Utils.hide (Utils.el("settings"));
-      Utils.show (Utils.el("container"));
-    },false);
-    
-    // save setting changes
-    Utils.el('close-settings-button').addEventListener ('click' , function () {
-      Utils.hide (Utils.el("settings"));
-      Utils.show (Utils.el("container"));
-      Sankey.settings = home.settings;
-      Process.drawChart();
-    },false);
-    
-    // insert in sheet
-    Utils.el('insert-button').addEventListener('click', function () {    
-        // convert to png and ask the server to do it
+  ns.initialize = function (reason) {
+
+
+    // insert in sheet 
+    Process.control.buttons.insert.addEventListener('click', function () {    
         try {
-          Client.insertImage ( CanvasConvert.svgToPng (Process.control.code.picker.value));
+          Client.insertImage ( CanvasConvert.svgToPng (Process.control.code.svg.value));
         }
         catch (err) {
-          App.showNotification ('Converting image to PNG format', err);
+          App.showNotification ('Error converting image to PNG format', err);
         }
     });
+    
+    // which settings to use
+    var elementer = Process.control.sankey.elementer;
+    var elems = elementer.getElements();
+
+    // this is about applying different settings 
+    Process.control.buttons.apply.addEventListener('click', function () { 
       
+      // just use the current settings
+      Process.control.buttons.apply.disabled=true;
+      Object.keys(Process.control.sankey.store).forEach(function(d) {
+        
+        if (elems.controls[d].checked) {
+          elementer.applySettings(Process.control.sankey.store[d]);
+          Sankey.mapSettings(elementer);
+          Process.drawChart();
+          App.toast ("Settings reset", 
+            "Your chart has been reformatted");
+        }
+      });
+      
+    });
+
+    // this is about enabling the apply button if anything different is selected
+    var buts = ['apply','manage'];
+    ['use-group','manage-group'].forEach (function (g,i) {
+      DomUtils.getGroup (g).forEach(function(d) {
+        d.addEventListener('change', function () {
+          Process.control.buttons[buts[i]].disabled=false;
+        });
+      });
+    });
+
+    
+    //this us about saving and clearing settings in property stores
+    Process.control.buttons.manage.addEventListener('click', function () {    
+      
+      // get all the elements
+      Process.control.buttons.manage.disabled=true;
+      var elementer = Process.control.sankey.elementer;
+      var elems = elementer.getElements();
+      var current = elementer.getCurrent();
+      
+      if (elems.controls.makePermanent.checked) {
+
+        Provoke.run('Props','setDocument', elementer.getCurrent())
+        .then (function (result) {
+          Process.control.sankey.store.useDocument = current;
+          elems.controls.useDocument.disabled = false;
+          App.toast ("Settings saved", "Current settings will be applied to all charts in this document in future");
+        })
+        ['catch'](function(err) {
+          App.showNotification("Error setting document properties",err);
+        });
+      }
+      
+      else if (elems.controls.makeDefault.checked) {
+        // write to user user properties
+        Provoke.run('Props','setUser', elementer.getCurrent())
+        .then (function (result) {
+          Process.control.sankey.store.useUser = current;
+          elems.controls.useUser.disabled = false;
+          App.toast ("Settings saved", 
+            "Current settings will be used as default for all your charts in documents without their own settings");
+        })
+        ['catch'](function(err) {
+          App.showNotification("Error setting user properties",err);
+        });
+
+      }
+
+      else if (elems.controls.clearPermanent.checked) {
+        // remove perm settings from document, user properties and apply factory values
+        Provoke.run ('Props', 'removeDocument')
+        .then(function (result) {
+          Process.control.sankey.store.useDocument = null;
+          elems.controls.useDocument.disabled = true;
+          App.toast ("Settings cleared", 
+            "Document settings have been removed");
+        })
+        ['catch'](function(err) {
+          App.showNotification("Error removing documentproperties",err);
+        });
+
+      }
+      
+      else if (elems.controls.clearDefault.checked) {
+        // remove perm settings from document, user properties and apply factory values
+        Provoke.run ('Props', 'removeUser')
+        .then(function (result) {
+          Process.control.sankey.store.useUser = null;
+          elems.controls.useUser.disabled = true;
+          App.toast ("Settings cleared", 
+            "Your default settings have been removed");
+        })
+        ['catch'](function(err) {
+          App.showNotification("Error removing user properties",err);
+        });
+
+
+      }
+      else {
+        App.showNotification ("radio group has nothing checked ","manage-group");
+      }
+
+    });
+
     // drop downs for field names
     Object.keys(Process.control.activeHeadings).forEach (function (k) {
       Process.control.activeHeadings[k].elem.addEventListener ('change' , function () {
@@ -48,17 +133,13 @@ var Home = (function (home) {
     },false);
   
     // type of input data radio buttons
-    ['input-data-type-whole','input-data-type-selection'].forEach (function (d) {
-      Utils.el(d).addEventListener ('click' , function () {
+    ['selectedRange','wholeSheet'].forEach (function (d) {
+      Process.control.buttons[d].addEventListener ('click' , function () {
         Process.selectFields();
         Process.drawChart(true);
       });
     },false);
-    
-    // bring up the picker
-    Utils.el('save-button').addEventListener ( 'click' , function (e) {
-      Client.startPicker();
-    },false);
+
   };
 
 
