@@ -2,67 +2,63 @@
 * client stuff that's specific to the type server
 */
 var Client = (function(client) {
-
-  client.getData = function () {
-
-    google.script.run
-    .withFailureHandler(function(error) {
-      App.showNotification ("data retrieval error", error);
-      
-    })
-    .withSuccessHandler(function(result){
-     
-      if(result.data) {
-        Process.syncResult (result);
-      }
-      Process.startPolling();
-    })
-    .getData(Process.control.result.checksum, Utils.el("input-data-type-selection").checked);
-  };
   
-  client.startPicker = function () {
-  
-    // disable inserting and saving
-    Process.control.buttons.insert.disabled = Process.control.buttons.save.disabled = true;
+  client.getData = function (polled) {
     
-    google.script.run
-      .withFailureHandler(function(error) {
-        App.showNotification ("Failed to save", error);
-        Process.control.buttons.insert.disabled = Process.control.buttons.save.disabled = false;
-      })
-      .withSuccessHandler(function (result) {
-         Process.control.buttons.insert.disabled = Process.control.buttons.save.disabled = false;
-      })
-      .startPicker(Process.control.code.svg.value,Process.control.code.picker.value);
+    if(!polled)spinCursor();
+    var pc = Process.control;
+    
+    Provoke.run ('Server', 'getData', pc.result.checksum, pc.buttons.selectedRange.checked)
+    .then (
+      function(result) {
+        if(result.data) {
+          Process.syncResult (result);
+        }
+        resetCursor();
+        Process.startPolling();
+      },
+      function (error) {
+        resetCursor();
+        App.showNotification ("data retrieval error", error);
+      });
   };
+  
   
   client.insertImage = function (png) {
   
     spinCursor();
-    Process.control.buttons.insert.disabled = Process.control.buttons.save.disabled = true;
-     
-    google.script.run
-      .withFailureHandler(function(error) {
+    disableButtons (true);
+    
+    Provoke.run ('Image', 'place', png)
+    .then (
+      function(result) {
+        resetCursor();
+        disableButtons(false);
+      },
+      function (error) {
         resetCursor();
         App.showNotification ("Failed to insert image", error);
-        Process.control.buttons.insert.disabled = Process.control.buttons.save.disabled = false;
-      })
-      .withSuccessHandler(function (result) {
-        resetCursor();
-        Process.control.buttons.insert.disabled = Process.control.buttons.save.disabled = false;
-      })
-      .insertImage(png);
+        disableButtons (false);
+      });
+    
+    
+    function disableButtons (state) {
+      Process.control.buttons.insert.disabled = state;
+    }
   };
   
   function resetCursor() {
-    Utils.el ('spinner').style.display = "none";
+    DomUtils.hide ('spinner',true);
   }
   function spinCursor() {
-    Utils.el ('spinner').style.display = "block";
+    DomUtils.hide ('spinner',false);
   }
 
   
   return client;
   
 })(Client || {});
+
+
+
 
