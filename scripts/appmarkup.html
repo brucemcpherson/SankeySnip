@@ -1,0 +1,65 @@
+<div id="content-wrapper">
+  <div id="container" class="mui-container">
+    <div id="page-data-content">
+      <div class="mui--text-title">
+        Chart preview
+      </div>
+      <div class="mui-divider"></div>
+      <div class="chart" id="chart"></div>
+    </div>
+    <div class="mui--text-title">
+      Settings
+    </div>
+    <div class="mui-divider"></div>
+    <div id="elementer-root"></div>
+  </div>
+
+
+  <div id="elementer-content"></div>
+
+ 
+
+  <div class="mui--hide" id="about-sankey">
+    <h3>What is a Sankey chart?</h3>
+    <p>A type of flow diagram that is used to visualize the flow of some resource between process nodes of a network. The width of the connectors represents the volume of flow between processes, and typically the overall volume of resource is preserved throughout
+      the system being visualized.Flows are unidirectional, and loops in the system (A sending to B and then B sending something back to A) are invalid. You can read more about <a href="http://www.sankey-diagrams.com/" target="_blank">Sankey diagrams here</a></p>
+
+    <p>Sankey Snip is a Google Sheets add-on which maintains a sankey chart preview in the sidebar of the active sheet's data in real time.</p>
+    <h3>Suitable types of data</h3>
+    <p>Sankey charts are often used to show transformations in a system (for example energy sources and uses), or material or money flows between a co-operating group. Google Analytics uses <a href="https://support.google.com/analytics/answer/1709395?hl=en"
+        target="_blank">this kind of diagram</a> to report on site navigation behavior.
+    </p>
+
+    <h4>Data format</h4>
+    <p>A Sankey chart needs 3 data items, which should be laid out as columns with headers in a sheet.</p>
+    <ul>
+      <li><b>From</b>. Sending process name</li>
+      <li><b>To</b>. Receiving process name</li>
+      <li><b>Volume</b>. Flow between 'From' and 'To'</li>
+    </ul>
+    <p>By default, the source data will be automatically detected in the active sheet, but you can customize the column names and range via the Data Settings. Any changes you make to the data will automatically be reflected in the chart preview.</p>
+    <h3>Chart image</h3>
+    <p>You can get a scaled up version of the chart preview by copying the code shown in the Chart settings/embed code area. This will be in SVG format so that you can embed the code or link to the drive file in a web site or document.
+    </p>
+    <p>It is also possible to insert a static version of the chart in your sheet. The scale and look of the chart is controlled by options in Chart settings.</p>
+
+    <p>Google Charts are used for visualization. Information about settings and options <a href="https://developers.google.com/chart/interactive/docs/gallery/sankey" target="_blank">can be found here</a>.</p>
+    <p>More information about using this add-on is available on
+      <a href="http://ramblings.mcpher.com/Home/excelquirks/addons/sankeyaddon" target="_blank">desktop liberation</a></p>
+
+  </div>
+
+</div>
+<div id="notification-area" class="notification mui--hide">
+  <div class="notification-header">
+    <span id="notification-header" class="notification-header-content"></span>
+    <span id="notification-close" class="mui--pull-right"><i class="mui--text-light material-icons">close</i></span>
+  </div>
+  <div id="notification-message" class="notification-message"></div>
+</div>
+<div class="spinner-container" id="spinner">
+<svg class="spinner" width="33px" height="33px" viewBox="0 0 35 35" xmlns="http://www.w3.org/2000/svg">
+   <circle class="path" fill="none" stroke-width="4" stroke-linecap="round" cx="17" cy="17" r="15"></circle>
+</svg>
+</div>
+<div class="ghost mui--hide" id="ghost"></div>
