@@ -1,50 +1,52 @@
-<style>
-
-/* Common app styling */
-
-.padding {
-	padding: 15px;
+.chart {
+	height:280px;
 }
-
-
 
 .notification {
-	position: absolute;
-	width: 100%;
-	min-height: 100px;
-	right: 0;
-	z-index: 100;
-	bottom: 0;
-	display: none; 
-    background-color:#D32F2F;
-    
+  bottom: 0;
+  position: fixed;
+  z-index:99;
+  
+  width:100%;
+  min-height:80px;
+
+  display: block;
+  overflow: hidden;
+
 }
 
+.notification-toast-header {
+   color: #ffffff;
+   background-color:#1976D2;
+}
+.notification-toast-message {
+   color: #ffffff;
+   background-color: #2196F3;
+}
+.notification-error-header {
+   color: #ffffff;
+   background-color: #FF5252;
+}
+.notification-error-message {
+   color: #ffffff;
+   background-color: #2196F3;
+}
 .notification-header {
-    background-color: #F44336;
-	font-weight: bold;
-    min-height: 26px;
-	color: #ffffff;
-    vertical-align:middle;
+   position:relative;
+   min-height: 26px;
+   padding:2px;
+}
+
+.notification-header-content {
+    width:90%;
+    font-weight:bold;
 }
 
 .notification-message {
-	background-color: #D32F2F;
-	color: #ffffff;
-    margin:4px;
+    min-height:54px;
+    padding-left:4px;
+    padding-right:4px;
+    padding-top:2px;
+    padding-bottom:2px;
 }
 
-
-.notification-close {
-	width: 24px;
-	height: 24px;
-	position: absolute;
-	right: 5px;
-	top: 2px;
-	cursor: pointer;
-    background-image: url("https://googledrive.com/host/0B92ExLh4POiZfkZsSDMwaHZUV3hneWdEbVV5aWVqenpWNjYtc29oYUZyYzVKVE50eFBMQm8/close-white.svg");
-	background-repeat: no-repeat;
-    
-}
-
-</style>
