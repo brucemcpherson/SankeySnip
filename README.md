@@ -7,4 +7,4 @@ The Sankey Snip Add-on documentation is [here](http://ramblings.mcpher.com/Home/
 
 You can do what you will with this source code - but this Sheets Add-on already exists, so don't just create another the same.
 
-NOTE .. You'll need to add your own Drive api key for the picker dialog in the Addon script file. No other changes are needed. Check the dependencies.md file for what all the scripts are for.
+
