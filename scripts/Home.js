@@ -28,13 +28,26 @@ var Home = (function (home) {
       // just use the current settings
       Process.control.buttons.apply.disabled=true;
       Object.keys(Process.control.sankey.store).forEach(function(d) {
-        
-        if (elems.controls[d].checked) {
-          elementer.applySettings(Process.control.sankey.store[d]);
-          Sankey.mapSettings(elementer);
-          Process.drawChart();
-          App.toast ("Settings reset", 
-            "Your chart has been reformatted");
+        try {
+          if (elems.controls[d] && elems.controls[d].checked) {
+            elementer.applySettings(Process.control.sankey.store[d])
+            // make default values visible for height/width
+            if(!parseInt(elems.controls.previewHeight.value,10)){
+              elems.controls.previewHeight.value = Process.control.chart.defOptions.height;
+            }
+            if(!parseInt(elems.controls.previewWidth.value,10)){
+              elems.controls.previewWidth.value = Process.control.chart.defOptions.width;
+            }
+            
+            Sankey.mapSettings(elementer);
+            Process.drawChart();
+            App.toast ("Settings reset", 
+                       "Your chart has been reformatted");
+          
+          }
+        }
+        catch (err) {
+          App.showNotification ("Control element error detected on settings " + d, err);
         }
       });
       
