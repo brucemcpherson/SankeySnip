@@ -94,6 +94,7 @@ var Process = (function (process) {
       
     };
 
+
     // get and apply any stored properties  
     return new Promise (function (resolve, reject) {
       
@@ -117,6 +118,14 @@ var Process = (function (process) {
         
         // the finally decided upon initial values
         pc.useInitial = elementer.getInitial();
+        
+        // use the defaults for the preview chart dimensions
+        if(!parseInt(elements.controls.previewHeight.value,10)){
+          elements.controls.previewHeight.value = Process.control.chart.defOptions.height;
+        }
+        if(!parseInt(elements.controls.previewWidth.value,10)){
+          elements.controls.previewWidth.value = Process.control.chart.defOptions.width;
+        }
         
         // map the values 
         process.applyElementer();
