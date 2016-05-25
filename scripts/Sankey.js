@@ -342,12 +342,18 @@ var Sankey = (function(sankey) {
           template: "numberTemplate",
           label: "Width",
           icon: "crop_landscape",
+          properties:{
+            max:1024
+          }
         },
         
         previewHeight: {
           template: "numberTemplate",
           label: "Height",
           icon: "crop_portrait",
+          properties:{
+            max:1024
+          }
         },
         
         scaleWidth: {
@@ -520,7 +526,7 @@ var Sankey = (function(sankey) {
         labelPadding: {
           template: "numberTemplate",
           label: "Label padding",
-          icon: "vertical_align_bottom",
+          icon: "format_indent_increase",
           properties: {
             max: 20,
             min: 0,
