@@ -431,7 +431,7 @@ function Elementer() {
 
           // the label
           var td = ea(tr, "td", "", fc.tdLabel, fs.tdLabel);
-          var label = ob.label ? ea(td, "label", DomUtils.fillLabel(ob.label), fc.subhead, fs.subhead) : null;
+          var label = ob.label ? ea(td, "label", DomUtils.fillLabel(ob.label), fc.subhead, fc.nav.nextIcon ? fs.navCursor : fs.subhead) : null;
           if (!ob.icon) {
             td.colSpan = 2;
           }
