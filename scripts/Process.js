@@ -9,7 +9,8 @@ var Process = (function (process) {
     resetProperty:"ssnipSettings",
     purchaseLevel:'ssnipLevel',
     fullAccess:10,
-    openAccess:true
+    openAccess:true,
+    version:"2.0.13"
   };
   
   process.applyElementer  = function () {
@@ -164,9 +165,12 @@ var Process = (function (process) {
       
       // the full sized chart
       svg = scaleChart(clear);
-      process.control.code.svg.value =  (svg && svg.length ? svg[0] : '');
-
-      
+      process.control.code.svg.value = "";
+      if (svg && svg.length) {
+        // need to tweak any gradient code so it works outside context of apps script
+        process.control.code.svg.value = svg[0].replace (/url\([^#]+/g, "url(");
+      }
+ 
     }
     
     function scaleChart(clear, divScale) {
