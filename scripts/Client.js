@@ -3,27 +3,18 @@
 */
 var Client = (function(client) {
   
-  client.getData = function (polled) {
+  client.start = function () {
     
-    if(!polled)spinCursor();
-    var pc = Process.control;
+    // in case we're spinning
+    resetCursor();
     
-    Provoke.run ('Server', 'getData', pc.result.checksum, pc.buttons.selectedRange.checked)
-    .then (
-      function(result) {
-        if(result.data) {
-          Process.syncResult (result);
-        }
-        resetCursor();
-        Process.startPolling();
-      },
-      function (error) {
-        resetCursor();
-        App.showNotification ("data retrieval error", error);
-      });
+    // this'll call sync when there's any data change
+    Process.control.watching.watcher.watch(function (current , pack, watcher) {
+      Process.syncResult (current);
+    });
+    
   };
-  
-  
+
   client.insertImage = function (png) {
   
     spinCursor();
