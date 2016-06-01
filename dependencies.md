@@ -1,5 +1,5 @@
 # Google Apps Script Project: SankeySnip
-This repo (SankeySnip) was automatically updated on 29 May 2016 14:45:39 BST by GasGit
+This repo (SankeySnip) was automatically updated on 01 June 2016 11:16:10 BST by GasGit
 
 For more information see the [desktop liberation site](http://ramblings.mcpher.com/Home/excelquirks/drivesdk/gettinggithubready "desktop liberation") or [contact me on G+](https://plus.google.com/+BruceMcpherson "Bruce McPherson - GDE")
 ## Details for Apps Script project SankeySnip
@@ -16,11 +16,9 @@ Process| server_js
 App| server_js
 App.css| html
 index| html
-Server| server_js
 Addon| server_js
 Home| server_js
 main.js| html
-Client| server_js
 Image| server_js
 CanvasConvert| server_js
 Include| server_js
@@ -32,6 +30,10 @@ spinner.css| html
 DomUtils| server_js
 Elementer| server_js
 Props| server_js
+ClientWatcher| server_js
+ServerWatcher| server_js
+Fiddler| server_js
+Client| server_js
 ### Directly referenced libraries
 no libraries discovered
 ### All dependencies and sub dependencies
