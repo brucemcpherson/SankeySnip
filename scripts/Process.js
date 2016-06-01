@@ -85,8 +85,12 @@ var Process = (function (process) {
         wholeSheet:elements.controls.wholeSheet
       },
       
-      polling: {
-        interval:2500,
+      watching: {
+        watcher:ClientWatcher.addWatcher({
+          pollingFrequency:3200,
+          watch:{sheets:false,active:false},
+          domain:{fiddler:false,scope:elements.controls.wholeSheet.checked ? "Sheet" : "Active"}
+        })
       },
       
       toast: {
@@ -248,9 +252,7 @@ var Process = (function (process) {
   * @param {object} result the result
   */
   process.syncResult = function (result) {
-    
-    
-    
+
     var sc = process.control;
     
     // store it
@@ -261,6 +263,7 @@ var Process = (function (process) {
       
       sc.headings = result.data.length ? result.data[0] : [];
       sc.data = result.data.length > 1 ? result.data.slice(1) : [];
+
       
       // make the data into k.v pairs
       sc.dataObjects = sc.data.map(function (row) {
@@ -272,7 +275,7 @@ var Process = (function (process) {
       });
       
       process.selectFields();
-      process.drawChart(result.clear);
+      process.drawChart();
       
       // enable inserting
       process.control.buttons.insert.disabled = false;
@@ -280,16 +283,6 @@ var Process = (function (process) {
     }
   }
   
-  
-  
-  /**
-  * every now and again, go and get the latest data
-  */
-  process.startPolling = function () {
-    setTimeout(function(){ 
-      Client.getData(true);
-    }, process.control.polling.interval);
-  }
   
   return process;
   
