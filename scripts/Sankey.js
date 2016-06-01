@@ -136,14 +136,20 @@ var Sankey = (function(sankey) {
           label: "Columns"
         },
         
-        useDivider: {
+        embedDivider: {
           template: "dividerTemplate",
-          label:"Apply settings",    
+          label:"Image embed code",
+          classes:{
+            label:"mui--text-dark-secondary mui--text-subhead"
+          }
         },
         
         manageDivider: {
           template: "dividerTemplate",
-          label:"Current settings",    
+          label:"Manage settings",
+          classes:{
+            label:"mui--text-dark-secondary mui--text-subhead"
+          }
         },
         
         useStandard: {
@@ -633,8 +639,8 @@ var Sankey = (function(sankey) {
           },
           
           manageSettings: {
-            label:"Manage settings",
-            items:["saveSettings","useDivider","useInitial","useStandard","useUser", "useDocument","applyButton"],
+            label:"Restore",
+            items:["useInitial","useStandard","useUser", "useDocument","applyButton"],
             on: {
               exit: function (elementer, branch_) {
                 // reset the buttons to apply next time in
@@ -642,10 +648,11 @@ var Sankey = (function(sankey) {
               }
             }
           },
+          
    
           saveSettings: {
-            label:"Save settings",
-            items:["manageDivider","makePermanent","makeDefault","clearPermanent","clearDefault","manageButton"],
+            label:"Save",
+            items:["makePermanent","makeDefault","clearPermanent","clearDefault","manageButton"],
             on: {
               exit: function (elementer, branch_) {
                 // reset the buttons to apply next time in
@@ -657,7 +664,7 @@ var Sankey = (function(sankey) {
           
           chartSettings: {
             label: "Chart",
-            items: ["arrangePreview", "scaleRatio", "embedCode","manageSettings"],
+            items: ["arrangePreview", "scaleRatio", "manageDivider","saveSettings","manageSettings","embedDivider","embedCode"],
             on: {
               exit: function(elementer, branch) {
                 // apply any settings changes
@@ -668,10 +675,12 @@ var Sankey = (function(sankey) {
               }
             }
           },
+          
           embedCode: {
-            label: "Get embed code",
+            label: "Get",
             items: ["svgCode"]
           },
+          
           arrangePreview: {
             label: "Appearance",
             items: ["previewHeight", "previewWidth", "links", "nodes","tooltips"]
