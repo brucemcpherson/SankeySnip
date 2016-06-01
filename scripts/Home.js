@@ -41,7 +41,7 @@ var Home = (function (home) {
             
             Sankey.mapSettings(elementer);
             Process.drawChart();
-            App.toast ("Settings reset", 
+            App.toast ("Settings restored", 
                        "Your chart has been reformatted");
           
           }
@@ -147,7 +147,11 @@ var Home = (function (home) {
   
     // type of input data radio buttons
     ['selectedRange','wholeSheet'].forEach (function (d) {
-      Process.control.buttons[d].addEventListener ('click' , function () {
+      Process.control.buttons[d].addEventListener ('change' , function () {
+        // change the polling scope
+        if (Process.control.buttons[d].checked) {
+          Process.control.watching.watcher.getWatching().domain.scope = d === "selectedRange" ? "Active" : "Sheet";
+        }
         Process.selectFields();
         Process.drawChart(true);
       });
