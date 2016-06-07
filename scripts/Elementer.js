@@ -28,9 +28,9 @@ function Elementer() {
   
   // anything added with setClasses() will be merged with this
   var defClasses_ = {
-    branch: "mui-container",
+    branch: "",
     subhead: "mui--text-subhead",
-    backLabel: "mui--text-dark-secondary mui--text-caption",
+    backLabel: "mui--text-accent-secondary",
     title: "mui--text-title",
     table: "mui-table",
     tr: "",
@@ -176,7 +176,7 @@ function Elementer() {
     dividerTemplate: {
       label: "subhead",
       classes: {
-        label: "mui--text-subhead"
+        label: "mui--text-accent"
       }
     },
     contentTemplate: {
