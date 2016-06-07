@@ -12,7 +12,28 @@ var Utils = (function(ns) {
     catch(err) {
       return 'Error:' + e + '\n' + err.stack.split('\n').slice(1).join('\n');
     }
-  }
+  };
+  
+  /**
+   * get an array of unique values
+   * @param {[*]} a the array
+   * @param {function} [func] return true if two items are equal
+   * @return {[*]} the unique items
+   */
+  ns.unique = function (a,func) {
+    return a.filter (function (d) {
+      return a.reduce (function (p,c) {
+        if ((func && func (d,c)) || (!func && d===c)) {
+          p++;
+        }
+        return p;
+      },0) === 1;
+    })
+  };
+  
+  ns.isSameAs = function (a,b) {
+    return ns.keyDigest (a) === ns.keyDigest(b);
+  };
    /**
   * @param {[*]} arguments unspecified number and type of args
   * @return {string} a digest of the arguments to use as a key
