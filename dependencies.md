@@ -1,5 +1,5 @@
 # Google Apps Script Project: SankeySnip
-This repo (SankeySnip) was automatically updated on 01 June 2016 11:16:10 BST by GasGit
+This repo (SankeySnip) was automatically updated on 07 June 2016 12:57:16 BST by GasGit
 
 For more information see the [desktop liberation site](http://ramblings.mcpher.com/Home/excelquirks/drivesdk/gettinggithubready "desktop liberation") or [contact me on G+](https://plus.google.com/+BruceMcpherson "Bruce McPherson - GDE")
 ## Details for Apps Script project SankeySnip
@@ -11,10 +11,9 @@ The shared link for [SankeySnip is here](https://script.google.com/d/1-a_HFFFKTu
 --- | --- 
 Sankey| server_js
 Utils| server_js
-View| server_js
 Process| server_js
 App| server_js
-App.css| html
+app.css| html
 index| html
 Addon| server_js
 Home| server_js
