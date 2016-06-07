@@ -46,19 +46,26 @@ var Process = (function (process) {
         },
         auth:{}
       },
-
+      
+      tabs: {
+        settings:DomUtils.elem("elementer-root")
+      },
+      
       activeHeadings: {
         from:{
-          current:'from',
-          elem:elements.controls.fromColumn
+          current:'',
+          elem:elements.controls.fromColumn,
+          best:'Source'
         },
         to: {
-          current:'to',
-          elem:elements.controls.toColumn
+          current:'',
+          elem:elements.controls.toColumn,
+          best:'Target'
         },
         value:{
-          current:'value',
-          elem:elements.controls.weightColumn
+          current:'',
+          elem:elements.controls.weightColumn,
+          best:'Volume'
         }
       },
       
@@ -67,6 +74,7 @@ var Process = (function (process) {
         data:[[]],
         elem:DomUtils.elem("chart"),
         ghost:DomUtils.elem("ghost"),
+        instructions:DomUtils.elem("instructions"),
         defOptions:{
           height:DomUtils.elem("chart").offsetHeight,
           width:DomUtils.elem("chart").offsetWidth
@@ -78,7 +86,7 @@ var Process = (function (process) {
       },
       
       buttons: {
-        insert:elements.controls.insertButton,
+        insert:DomUtils.elem("insert-button"),
         manage:elements.controls.manageButton,
         apply:elements.controls.applyButton,
         selectedRange:elements.controls.selectedRange,
@@ -94,7 +102,7 @@ var Process = (function (process) {
       },
       
       toast: {
-        interval:4000
+        interval:3500
       }
       
     };
@@ -146,12 +154,14 @@ var Process = (function (process) {
   
   /**
   * draw a sankey chart from the matrix data
-  * @param {boolean} clear whether to clear current chart first
   */
-  process.drawChart = function (clear) {
+  process.drawChart = function () {
     
-    //disable inserting
-    process.control.buttons.insert.disabled  = false;
+    //disable inserting.. during construction
+    process.control.buttons.insert.disabled  = true;
+    
+    // no need to clear the chart first
+    var clear = true;
     
     var sc = process.control.chart;
     var sts = process.control.sankey.settings;
@@ -160,7 +170,7 @@ var Process = (function (process) {
     var svg;
     
     if (sc.data.length) {
-      
+
       opt.height = opt.height || sc.defOptions.height;
       opt.width = opt.width || sc.defOptions.width;
       
@@ -174,7 +184,19 @@ var Process = (function (process) {
         // need to tweak any gradient code so it works outside context of apps script
         process.control.code.svg.value = svg[0].replace (/url\([^#]+/g, "url(");
       }
- 
+      DomUtils.hide (sc.instructions,true);
+      DomUtils.hide (sc.elem,false);
+            
+      // enable inserting
+      process.control.buttons.insert.disabled = false;
+
+    }
+    else {
+      // no viable data so reveal instructions and disable insertion
+      process.control.buttons.insert.disabled  = true;
+      DomUtils.hide (sc.elem,true);
+      DomUtils.hide (sc.instructions,false);
+      
     }
     
     function scaleChart(clear, divScale) {
@@ -206,46 +228,81 @@ var Process = (function (process) {
       
     }
     
-    process.control.buttons.insert.disabled  =  !svg; 
+
     
   };
   
   process.selectFields = function () {
     var sc = process.control;
     
-    // duplicate removal
+    // goodheadings will contain the potential headings
     var goodHeadings = sc.headings.filter(function(d,i,a) {
       return a.indexOf(d) === i && d;
     });
-    
-    
+
     // make active headings/ deleting them if not there, along with the chart headings
-    sc.chart.headings = Object.keys(sc.activeHeadings).map (function(k,i) {
-      
+    sc.chart.headings = Object.keys(sc.activeHeadings).map (function(k) {
+        
       // the object describing each data column
       var d = sc.activeHeadings[k];
+      var options = DomUtils.getOptions(d.elem);
       
-      // set to the currently selected value
-      d.current = d.elem.value || d.current;
+      // sliced the first one which is a null option if it exists
+      if (!options.length || !Utils.isSameAs (goodHeadings, options.slice(1))) {
+        
+        // we have a potentially new set of options, rebuild the select
+        var selected = d.elem.value;
+        
+        d.elem.innerHTML= "";
+        d.current = d.elem.value = "";
+        
+        // add a null option
+        DomUtils.addElem (d.elem,"option");
+        goodHeadings.forEach(function (e) {
+          var op = DomUtils.addElem (d.elem,"option");
+          op.value = e;
+          op.text = e;
+        });
+        
+        // and if currently selected is no longer in the list then we need to cancel it
+        if (goodHeadings.indexOf(selected) === -1) {
+          d.elem.value = d.current = "";
+        }
+        
+        else if (selected) {
+          d.current = d.elem.value = selected;
+        }
+      }
+      return d;
+    })
+    .map (function (d,i,a) {
+      // now we need to deduce new values
+      if (!d.current && !a.some(function(e) { return e.current === d.best })) {
+        // we dont have a selection for this one, and its not being used by someone else so use the default
+        if (goodHeadings.indexOf(d.best) !== -1) {
+          d.current = d.best;
+        }
+      }
       
-      // default to positional if we cant find a match .. this would be first time round
-      if (goodHeadings.indexOf(d.current) === -1) d.current = goodHeadings.length > i ? goodHeadings[i] : undefined; 
+      // if that didnt find anything then use the position
+      if (!d.current && goodHeadings.length > i && !a.some(function(e) { return e.current === goodHeadings[i] ; })) {
+        d.current = goodHeadings[i];
+      }
       
-      
-      // redo the select options
-      d.current = View.buildSelectElem (goodHeadings , d.elem , d.current);
-      
-      
+      // now set the select value to whatever it now is
+      d.elem.value = d.current;
       return d.current;
-      
     });
-    
+     
     // make the chart data
-    sc.chart.data = sc.dataObjects.map (function (row) {
-      return sc.chart.headings.map(function(d) {
-        return row[d];
-      });
-    });
+    var sh = sc.chart.headings;
+
+    sc.chart.data = sh.every(function(d) { return d;}) && Utils.unique(sh).length === Object.keys(sc.activeHeadings).length ? 
+      sc.dataObjects.map ( function (row) {
+        return sh.map(function(d) {
+          return row[d];
+        }) 
+      }) : [];
   }
   /**
   * fix up and store data received from server
@@ -276,9 +333,7 @@ var Process = (function (process) {
       
       process.selectFields();
       process.drawChart();
-      
-      // enable inserting
-      process.control.buttons.insert.disabled = false;
+
       
     }
   }
