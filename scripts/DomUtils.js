@@ -4,7 +4,14 @@ var DomUtils = (function(ns) {
   ns.getGroup = function (groupName) {
     return Array.prototype.slice.apply(document.getElementsByName (groupName));  
   }
-    
+  
+  ns.getOptions = function (selectElem) {
+    var sel = ns.elem (selectElem);
+    return (Array.isArray(sel.options) ? sel.options : []).map(function (d) {
+      return d.text;
+    });
+  } 
+  
   ns.getChecked = function (groupName) {
     
     var filt = (document.getElementsByName (groupName) || []).filter(function(d) {
