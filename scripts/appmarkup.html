@@ -11,7 +11,8 @@
       <div class="chart" id="chart"></div>
       <div class="mui-panel mui--hide" id="instructions">
 
-       To create data for this chart, you need 3 columns in the current sheet like this
+       To create data for this chart, you need 3 columns in the current sheet. Sankey snip will detect chartable data automatically, 
+       or you can customize the source data in the Settings/data section.
        <table class="mui-table">
        <thead><tr><th>Source</th><th>Target</th><th>Volume</th></tr></thead>
        <tbody>
@@ -21,18 +22,21 @@
        <tr><td colspan="3">etc..</td></tr>
        </tbody>
        </table>
-       Sankey Snip will detect the data automatically if you have additional columns or alternative labels.You can also use Settings/Data to change the data columns manually.
- 
+       <div>You can also generate some sample data</div>
+       <div class="padding"></div>
+       <button id="generate-button" class="create">Generate</button>
+       
+
      </div>
     </div>
     
-
-    <div class="button-place">
+  
+    <div id="main-buttons" class="button-place">
     <div class="button-item">
     <button id="insert-button" class="action" disabled>Insert</button>
     </div>
     <div class="button-item">
-    <button id="close-button" onclick="google.script.host.close();">Close</button>
+    <button id="close-button">Close</button>
     </div>
     </div>
   </div>
