@@ -40,7 +40,7 @@ function Elementer() {
     elementContainer: "",
     tdElement: "mui--text-right mui--align-middle",
     tdLabel: "",
-    icon: "mui--text-dark-secondary material-icons md-18",
+    icon: "mui--text-dark-secondary material-icons",
     tdIcon: "mui--align-middle",
     option:"",
     nav: {
@@ -54,7 +54,7 @@ function Elementer() {
   var defStyles_ = {
     td: "padding:3px",
     tdLabel: "padding:3px",
-    tdIcon: "padding:3px",
+    tdIcon: "padding:3px;max-width:30px;",
     tdElement: "padding:3px",
     backLabel:"position:relative;vertical-align: middle;",
     icon:"vertical-align: middle;",
@@ -221,7 +221,9 @@ function Elementer() {
   self.getElements = function() {
     return elements_;
   };
-
+  self.getLayout = function () {
+    return layout_;
+  }
   /**
    * @param {object} detail an object with the item details
    * @return {Elementer} self
@@ -527,6 +529,15 @@ function Elementer() {
               if(ob.values.resetable) {
                 initial_[d] = ob.values.value;
               }
+            }
+            
+            // now apply any onchange/ click etc.
+            if (ob.on) {
+              Object.keys (ob.on).forEach(function (o) {
+                elem.addEventListener (o , function (e) {
+                  ob.on[o] (self , branchName , ob , e);
+                });
+              });
             }
             elements_.controls[d] = elem;
           }
