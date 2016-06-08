@@ -24,7 +24,7 @@
         
         // dont let the from and to field be the same
         if (headers[0] === headers[1]) return;
-        
+
         // assuming the data is all clean here
         var dataTable = new google.visualization.DataTable();
         
@@ -61,6 +61,7 @@
       .build();
       
     };
+    
     
     sankey.mapSettings = function (arger) {
       
@@ -256,6 +257,49 @@
             }
           },
           
+          resetButtonTemplate:{
+            tag:"BUTTON",
+            label:"",
+            classes:{
+              element:"mui--pull-left"
+            },
+            properties:{
+              type:"button",
+              disabled:true
+            },
+            styles:{
+              tdElement:"padding-top:10px;"
+            },
+            values:{
+              property:"innerHTML",
+              value:"Reset",
+              resetable:false
+            },
+            custom:{
+              spanCols:true
+            }
+          },
+          
+          resetButton_arrangePreview:{
+            template:"resetButtonTemplate",
+          },
+          
+          resetButton_links:{
+            template:"resetButtonTemplate",
+          },
+          
+          resetButton_nodes:{
+            template:"resetButtonTemplate",
+          },
+          
+          resetButton_tooltips:{
+            template:"resetButtonTemplate",
+          },
+          
+          resetButton_scaleRatio:{
+            template:"resetButtonTemplate",
+          }, 
+          
           applyButton:{
             template:"buttonTemplate",
             classes:{
@@ -326,8 +370,14 @@
             label: "Width",
             icon: "crop_landscape",
             properties:{
-              max:1024
+              max:600
+            },
+            on: {
+              change: function (elementer, branch , ob,e) {
+                elementer.getElements().controls.resetButton_arrangePreview.disabled = false;
+              }
             }
+            
           },
           
           previewHeight: {
@@ -335,47 +385,67 @@
             label: "Height",
             icon: "crop_portrait",
             properties:{
-              max:1024
+              max:600
+            },
+            on: {
+              change: function (elementer, branch , ob,e) {
+                elementer.getElements().controls.resetButton_arrangePreview.disabled = false;
+              }
             }
           },
           
           scaleWidth: {
             template: "numberTemplate",
-            label: "Width ratio to preview chart",
+            label: "Width of embedded chart",
             icon: "picture_in_picture_alt",
             properties: {
-              max: 5,
-              min: .2,
-              step: 0.1
+              max: 1200,
+              min: 100,
+              step: 1
             },
             values:{
-              value:2.3
+              value:600
+            },
+            on: {
+              change: function (elementer, branch , ob,e) {
+                elementer.getElements().controls.resetButton_scaleRatio.disabled = false;
+              }
             }
           },
           scaleHeight: {
             template: "numberTemplate",
-            label: "Height ratio to preview chart",
+            label: "Height of embedded chart",
             icon: "picture_in_picture",
             properties: {
-              max: 5,
-              min: .2,
-              step: 0.1
+              max: 1200,
+              min: 100,
+              step: 1
             },
             values:{
-              value:1.1
+              value:400
+            },
+            on: {
+              change: function (elementer, branch , ob,e) {
+                elementer.getElements().controls.resetButton_scaleRatio.disabled = false;
+              }
             }
           },
           scaleFont: {
             template: "numberTemplate",
-            label: "Font size ratio to preview chart",
+            label: "Font size of embedded chart",
             icon: "format_size",
             properties: {
-              max: 3,
-              min: .5,
-              step: 0.1
+              max: 32,
+              min: 6,
+              step: 1
             },
             values:{
-              value:1.2
+              value:12
+            },
+            on: {
+              change: function (elementer, branch , ob,e) {
+                elementer.getElements().controls.resetButton_scaleRatio.disabled = false;
+              }
             }
           },
           
@@ -389,6 +459,11 @@
             },
             values:{
               value:10
+            },
+            on: {
+              change: function (elementer, branch , ob,e) {
+                elementer.getElements().controls.resetButton_nodes.disabled = false;
+              }
             }
           },
           nodeWidth: {
@@ -401,6 +476,11 @@
             },
             values:{
               value:5
+            },
+            on: {
+              change: function (elementer, branch , ob,e) {
+                elementer.getElements().controls.resetButton_nodes.disabled = false;
+              }
             }
           },
           tooltipFontSize: {
@@ -413,6 +493,11 @@
             },
             values:{
               value:10
+            },
+            on: {
+              change: function (elementer, branch , ob,e) {
+                elementer.getElements().controls.resetButton_tooltips.disabled = false;
+              }
             }
           },
           tooltipFontName: {
@@ -421,6 +506,11 @@
             icon: "text_fields",
             values: {
               value: "Roboto"
+            },
+            on: {
+              change: function (elementer, branch , ob,e) {
+                elementer.getElements().controls.resetButton_tooltips.disabled = false;
+              }
             }
           },
           tooltipFontColor: {
@@ -432,17 +522,32 @@
             },
             values:{
               value:"#212121"
+            },
+            on: {
+              change: function (elementer, branch , ob,e) {
+                elementer.getElements().controls.resetButton_tooltips.disabled = false;
+              }
             }
           },
           tooltipFontBold: {
             template: "checkboxTemplate",
             label: "Bold",
-            icon: "format_bold"
+            icon: "format_bold",
+            on: {
+              change: function (elementer, branch , ob,e) {
+                elementer.getElements().controls.resetButton_tooltips.disabled = false;
+              }
+            }
           },
           tooltipFontItalic: {
             template: "checkboxTemplate",
             label: "Italic",
-            icon: "format_italic"
+            icon: "format_italic",
+            on: {
+              change: function (elementer, branch , ob,e) {
+                elementer.getElements().controls.resetButton_tooltips.disabled = false;
+              }
+            }
           },
           
           linkColorMode:{
@@ -452,6 +557,11 @@
             options:["none","source","target","gradient"],
             values:{
               value:"none"
+            },
+            on: {
+              change: function (elementer, branch , ob,e) {
+                elementer.getElements().controls.resetButton_links.disabled = false;
+              }
             }
           },
           linkFillColor: {
@@ -464,6 +574,11 @@
             },
             values:{
               value:'#eeeeee'
+            },
+            on: {
+              change: function (elementer, branch , ob,e) {
+                elementer.getElements().controls.resetButton_links.disabled = false;
+              }
             }
           },
           linkBorderWidth: {
@@ -476,6 +591,11 @@
             },
             values:{
               value:0
+            },
+            on: {
+              change: function (elementer, branch , ob,e) {
+                elementer.getElements().controls.resetButton_links.disabled = false;
+              }
             }
           },
           linkBorderColor: {
@@ -487,6 +607,11 @@
             },
             values:{
               value:'#212121'
+            },
+            on: {
+              change: function (elementer, branch , ob,e) {
+                elementer.getElements().controls.resetButton_links.disabled = false;
+              }
             }
           },
           linkOpacity: {
@@ -500,6 +625,11 @@
             },
             values:{
               value:0.4
+            },
+            on: {
+              change: function (elementer, branch , ob,e) {
+                elementer.getElements().controls.resetButton_links.disabled = false;
+              }
             }
           },
           labelDivider: {
@@ -517,6 +647,11 @@
             },
             values:{
               value:6
+            },
+            on: {
+              change: function (elementer, branch , ob,e) {
+                elementer.getElements().controls.resetButton_nodes.disabled = false;
+              }
             }
           },
           labelFontSize: {
@@ -529,6 +664,11 @@
             },
             values:{
               value:10
+            },
+            on: {
+              change: function (elementer, branch , ob,e) {
+                elementer.getElements().controls.resetButton_nodes.disabled = false;
+              }
             }
           },
           labelFontName: {
@@ -548,6 +688,11 @@
             },
             values:{
               value:'#212121'
+            },
+            on: {
+              change: function (elementer, branch , ob,e) {
+                elementer.getElements().controls.resetButton_nodes.disabled = false;
+              }
             }
           },
           labelFontBold: {
@@ -564,6 +709,11 @@
             icon: "format_italic",
             values:{
               value:false
+            },
+            on: {
+              change: function (elementer, branch , ob,e) {
+                elementer.getElements().controls.resetButton_nodes.disabled = false;
+              }
             }
           },
           
@@ -619,7 +769,7 @@
               label:"Reset",
               items:["useInitial","useStandard","useUser", "useDocument","applyButton"],
               on: {
-                exit: function (elementer, branch_) {
+                exit: function (elementer, branch) {
                   // reset the buttons to apply next time in
                   Process.control.buttons.apply.disabled=false;
                 }
@@ -630,7 +780,7 @@
               label:"Save",
               items:["makePermanent","makeDefault","clearPermanent","clearDefault","manageButton"],
               on: {
-                exit: function (elementer, branch_) {
+                exit: function (elementer, branch) {
                   // reset the buttons to apply next time in
                   Process.control.buttons.manage.disabled=false;
                 }
@@ -644,23 +794,57 @@
             
             arrangePreview: {
               label: "Appearance",
-              items: ["previewHeight", "previewWidth", "links", "nodes","tooltips"]
+              items: ["previewHeight", "previewWidth", "links", "nodes","tooltips","resetButton_arrangePreview"],
+              on:{
+                enter:function (elementer,branch) {
+                  elementer.getElements().controls.resetButton_arrangePreview.disabled = true;
+                  Process.reserveResetValues (elementer, branch);
+                }
+              }
             },
+            
             scaleRatio: {
               label: "Scale",
-              items: ["scaleHeight", "scaleWidth", "scaleFont"]
+              items: ["scaleHeight", "scaleWidth", "scaleFont","resetButton_scaleRatio"],
+              on:{
+                enter:function (elementer,branch) {
+                 elementer.getElements().controls.resetButton_scaleRatio.disabled = true;
+                  Process.reserveResetValues (elementer, branch);
+                }
+              }
             },
+            
             links: {
               label: "Links",
-              items: ["linkColorMode","linkFillColor", "linkOpacity", "linkBorderColor", "linkBorderWidth"]
+              items: ["linkColorMode","linkFillColor", "linkOpacity", "linkBorderColor", "linkBorderWidth","resetButton_links"],
+              on:{
+                enter:function (elementer,branch) {
+                  elementer.getElements().controls.resetButton_links.disabled = true;
+                  Process.reserveResetValues (elementer, branch);
+                }
+              }
             },
+            
             nodes: {
               label: "Nodes",
-              items: ["nodePadding", "nodeWidth", "labelDivider", "labelPadding",  "labelFontSize", "labelFontColor", "labelFontName","labelFontBold", "labelFontItalic"]
+              items: ["nodePadding", "nodeWidth", "labelDivider", "labelPadding",  "labelFontSize", 
+                      "labelFontColor", "labelFontName","labelFontBold", "labelFontItalic","resetButton_nodes"],
+              on:{
+                enter:function (elementer,branch) {
+                  elementer.getElements().controls.resetButton_nodes.disabled = true;
+                  Process.reserveResetValues (elementer, branch);
+                }
+              }
             },
             tooltips: {
               label: "Tooltips",
-              items: ["tooltipFontSize", "tooltipFontColor", "tooltipFontName","tooltipFontBold", "tooltipFontItalic"]
+              items: ["tooltipFontSize", "tooltipFontColor", "tooltipFontName","tooltipFontBold", "tooltipFontItalic","resetButton_tooltips"],
+              on:{
+                enter:function (elementer,branch) {
+                  elementer.getElements().controls.resetButton_tooltips.disabled = true;
+                  Process.reserveResetValues (elementer, branch);
+                }
+              }
             }
           }
         }
