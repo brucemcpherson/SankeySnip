@@ -42,10 +42,13 @@ var Process = (function (process) {
           useInitial:null,
           useStandard:null,
           useUser:null,
-          useDocument:null
+          useDocument:null,
+          reset:{
+          }
         },
         auth:{}
       },
+
       
       tabs: {
         settings:DomUtils.elem("elementer-root")
@@ -75,6 +78,7 @@ var Process = (function (process) {
         elem:DomUtils.elem("chart"),
         ghost:DomUtils.elem("ghost"),
         instructions:DomUtils.elem("instructions"),
+        mainButtons:DomUtils.elem("main-buttons"),
         defOptions:{
           height:DomUtils.elem("chart").offsetHeight,
           width:DomUtils.elem("chart").offsetWidth
@@ -87,8 +91,17 @@ var Process = (function (process) {
       
       buttons: {
         insert:DomUtils.elem("insert-button"),
+        close:DomUtils.elem("close-button"),
         manage:elements.controls.manageButton,
         apply:elements.controls.applyButton,
+        generate:DomUtils.elem("generate-button"),
+        reset:[
+          elements.controls.resetButton_arrangePreview,
+          elements.controls.resetButton_scaleRatio,
+          elements.controls.resetButton_nodes,
+          elements.controls.resetButton_links,
+          elements.controls.resetButton_tooltips
+        ],
         selectedRange:elements.controls.selectedRange,
         wholeSheet:elements.controls.wholeSheet
       },
@@ -153,6 +166,40 @@ var Process = (function (process) {
   };
   
   /**
+   * will be called to restore any values reserverd for this page
+   * @param {Elementer} elementer the elementer
+   * @param {string} branch the branchname
+   */
+  process.restoreResetValues = function (elementer , branch) {
+    
+    // merge them with the current settings and apply them to the chart
+    elementer.applySettings(Utils.vanMerge([elementer.getCurrent(),Process.control.sankey.store.reset[branch]]));
+    
+    
+  }
+  /**
+   * will be called on entering a page that needs preserved to store initial values affected by that page
+   * @param {Elementer} elementer the elementer
+   * @param {string} branch the branchname
+   */
+  process.reserveResetValues = function (elementer, branch) {
+    
+    // all the current values
+    var current = elementer.getCurrent();
+    
+    // the items on this page
+    var items = elementer.getLayout().pages[branch].items;
+    
+    // store the values on this page
+    Process.control.sankey.store.reset[branch] = items.reduce(function (p,c) {
+      if (current.hasOwnProperty(c)) p[c] = current[c];
+      return p;
+    },{});
+    
+
+
+  }
+  /**
   * draw a sankey chart from the matrix data
   */
   process.drawChart = function () {
@@ -185,6 +232,7 @@ var Process = (function (process) {
         process.control.code.svg.value = svg[0].replace (/url\([^#]+/g, "url(");
       }
       DomUtils.hide (sc.instructions,true);
+      DomUtils.hide(sc.mainButtons,false);
       DomUtils.hide (sc.elem,false);
             
       // enable inserting
@@ -196,6 +244,7 @@ var Process = (function (process) {
       process.control.buttons.insert.disabled  = true;
       DomUtils.hide (sc.elem,true);
       DomUtils.hide (sc.instructions,false);
+      DomUtils.hide (sc.mainButtons,true);
       
     }
     
@@ -206,16 +255,16 @@ var Process = (function (process) {
       var scale = divScale || big.scale;
       
       var big = Utils.vanMerge([opt, {
-        height: opt.height * scale.height,
-        width: opt.width * scale.width,
+        height: scale.height,
+        width:  scale.width,
         sankey: {
         node: {
         label: {
-        fontSize: opt.sankey.node.label.fontSize * scale.font
+        fontSize: scale.font
       },
-                                labelPadding: opt.sankey.node.labelPadding * scale.width,
-                                nodePadding: opt.sankey.node.nodePadding * scale.height,
-                                width: opt.sankey.node.width * scale.width
+                                labelPadding: opt.sankey.node.labelPadding /opt.sankey.node.label.fontSize * scale.font,
+                                nodePadding: opt.sankey.node.nodePadding /opt.height * scale.height,
+                                width: opt.sankey.node.width/ opt.width * scale.width
                                 }
                                 }
                                 }]);
