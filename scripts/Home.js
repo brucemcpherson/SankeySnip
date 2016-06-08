@@ -8,6 +8,18 @@ var Home = (function (home) {
   ns.initialize = function (reason) {
 
 
+    Process.control.buttons.generate.addEventListener('click',function () {
+    
+      Provoke.run("Server","generateTestData")
+      .then (function (result) {
+        App.toast ("Sample data generated","You can delete this sheet at any time");
+      })
+      ['catch'](function (err) {
+        App.showNotification ("Failed to generate sample data", err);
+      });
+      
+    
+    });
     // insert in sheet 
     Process.control.buttons.insert.addEventListener('click', function () {    
         try {
@@ -17,6 +29,13 @@ var Home = (function (home) {
           App.showNotification ('Error converting image to PNG format', err);
         }
     });
+    
+    // if the close button exists then do it.
+    if (Process.control.buttons.close) {
+      Process.control.buttons.close.addEventListener('click', function () {    
+          google.script.host.close();
+      });
+    }
     
     // watch out for exiting the tab
     var toggles = document.querySelectorAll('[data-mui-controls="' + Process.control.tabs.settings.id + '"]');
@@ -39,7 +58,7 @@ var Home = (function (home) {
       Object.keys(Process.control.sankey.store).forEach(function(d) {
         try {
           if (elems.controls[d] && elems.controls[d].checked) {
-            elementer.applySettings(Process.control.sankey.store[d])
+            elementer.applySettings(Process.control.sankey.store[d]);
             // make default values visible for height/width
             if(!parseInt(elems.controls.previewHeight.value,10)){
               elems.controls.previewHeight.value = Process.control.chart.defOptions.height;
@@ -72,6 +91,13 @@ var Home = (function (home) {
       });
     });
 
+    // this is about restoring settings if selected in the settings menus
+    Process.control.buttons.reset.forEach(function(d) {
+      d.addEventListener('click',function() {
+        Process.restoreResetValues (Process.control.sankey.elementer , d.id.match(/resetButton_(\w+)-elem/)[1]);
+        d.disabled = true;
+      });
+    });
     
     //this us about saving and clearing settings in property stores
     Process.control.buttons.manage.addEventListener('click', function () {    
