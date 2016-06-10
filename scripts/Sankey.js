@@ -36,8 +36,8 @@
         dataTable.addRows(data.map(function(d) {
           return [d[0].toString(), d[1].toString() , parseInt (d[2],10) ,  d[0] + ">" + d[1] + "(" + d[2] + ")"];
         }).filter(function(d){
-          // get rid of blank rows
-          return d[0] && d[1] && !isNaN(d[2]);
+          // get rid of blank rows (0 volumes will not be plotted either)
+          return d[0] && d[1] && !isNaN(d[2]) && d[2];
         }));
         
         
