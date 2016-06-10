@@ -10,14 +10,25 @@ var Home = (function (home) {
 
     Process.control.buttons.generate.addEventListener('click',function () {
     
+      // spin the cursor
+      DomUtils.hide ('spinner',false);
+      // disable the button
+      Process.control.buttons.generate.disabled = true;
+      
       Provoke.run("Server","generateTestData")
       .then (function (result) {
         App.toast ("Sample data generated","You can delete this sheet at any time");
+        finallyPromise();
       })
       ['catch'](function (err) {
         App.showNotification ("Failed to generate sample data", err);
+        finallyPromise();
       });
       
+      function finallyPromise  () {
+        DomUtils.hide ('spinner', true);
+        Process.control.buttons.generate.disabled = false;
+      }
     
     });
     // insert in sheet 
