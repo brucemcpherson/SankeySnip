@@ -243,77 +243,55 @@
           
           manageButton:{
             template:"buttonTemplate",
-            classes:{
-              element:"action mui--pull-left"
-            },
-            styles:{
-              tdElement:"padding-top:10px;"
+            classes: {
+              element:"action"
             },
             values:{
-              value:"Save"
-            },
-            custom:{
-              spanCols:true
+              value:"SAVE"
             }
           },
+        
           
-          resetButtonTemplate:{
-            tag:"BUTTON",
-            label:"",
-            classes:{
-              element:"mui--pull-left"
-            },
-            properties:{
-              type:"button",
-              disabled:true
-            },
-            styles:{
-              tdElement:"padding-top:10px;"
-            },
-            values:{
-              property:"innerHTML",
-              value:"Reset",
-              resetable:false
-            },
+          resetButton_dataSettings:{
+            template:"resetButtonTemplate"
+          }, 
+
+          
+          resetButton_embedCode:{
+            template:"resetButtonTemplate",
             custom:{
-              spanCols:true
+              cancelOnly:true
             }
-          },
+          }, 
           
           resetButton_arrangePreview:{
-            template:"resetButtonTemplate",
+            template:"resetButtonTemplate"
           },
           
           resetButton_links:{
-            template:"resetButtonTemplate",
+            template:"resetButtonTemplate"
           },
           
           resetButton_nodes:{
-            template:"resetButtonTemplate",
+            template:"resetButtonTemplate"
           },
           
           resetButton_tooltips:{
-            template:"resetButtonTemplate",
+            template:"resetButtonTemplate"
           },
           
           resetButton_scaleRatio:{
-            template:"resetButtonTemplate",
+            template:"resetButtonTemplate"
           }, 
           
           applyButton:{
             template:"buttonTemplate",
             classes:{
-              element:"action mui--pull-left"
-            },
-            styles:{
-              tdElement:"padding-top:10px;"
+              element:"action"
             },
             values:{
-              value:"Apply"
+              value:"APPLY"
             },
-            custom:{
-              spanCols:true
-            }
           },
   
           wholeSheet: {
@@ -322,12 +300,18 @@
             icon: "grid_on",
             values: {
               value: true,
-              resetable:false
+              resetable:true
             },
             properties:{
               name:"range-group"
+            },
+            on: {
+              change: function (elementer, branch , ob,e) {
+                elementer.getElements().controls.resetButton_dataSettings.disabled = false;
+              }
             }
-          },        
+          },
+          
           selectedRange: {
             template: "radioTemplate",
             label: "Selected range",
@@ -336,7 +320,12 @@
               name:"range-group"
             },
             values:{
-              resetable:false
+              resetable:true
+            },
+            on: {
+              change: function (elementer, branch , ob,e) {
+                elementer.getElements().controls.resetButton_dataSettings.disabled = false;
+              }
             }
           },
           
@@ -345,15 +334,26 @@
             label: "Source column",
             icon: "skip_previous",
             values:{
-              resetable:false
+              resetable:true
+            },
+            on: {
+              change: function (elementer, branch , ob,e) {
+                elementer.getElements().controls.resetButton_dataSettings.disabled = false;
+              }
             }
           },
+          
           toColumn: {
             template: "selectTemplate",
             label: "Target column",
             icon: "skip_next",
             values:{
-              resetable:false
+              resetable:true
+            },
+            on: {
+              change: function (elementer, branch , ob,e) {
+                elementer.getElements().controls.resetButton_dataSettings.disabled = false;
+              }
             }
           },
           weightColumn: {
@@ -361,7 +361,12 @@
             label: "Weight column",
             icon: "network_check",
             values:{
-              resetable:false
+              resetable:true
+            },
+            on: {
+              change: function (elementer, branch , ob,e) {
+                elementer.getElements().controls.resetButton_dataSettings.disabled = false;
+              }
             }
           },
           
@@ -506,6 +511,9 @@
             icon: "text_fields",
             values: {
               value: "Roboto"
+            },
+            styles:{
+              element:"width:80px;"
             },
             on: {
               change: function (elementer, branch , ob,e) {
@@ -677,6 +685,9 @@
             icon: "text_fields",
             values: {
               value: "Roboto"
+            },
+            styles:{
+              element:"width:80px;"
             }
           },
           labelFontColor: {
@@ -701,7 +712,12 @@
             values:{
               value:false
             },
-            icon: "format_bold"
+            icon: "format_bold",
+            on: {
+              change: function (elementer, branch , ob,e) {
+                elementer.getElements().controls.resetButton_nodes.disabled = false;
+              }
+            }
           },
           labelFontItalic: {
             template: "checkboxTemplate",
@@ -716,23 +732,25 @@
               }
             }
           },
+          svgLabel: {
+            template:"contentTemplate",
+            label: "Copy embeddable SVG code below",
+            styles:{
+              tdLabel:"border-width:0px;"
+            }
+          },
           
           svgCode: {
             template: "textAreaTemplate",
-            label: "Copy SVG code to embed the chart image in your web site",
+            label: "",
             properties: {
               disabled: true,
-              rows: 18,
+              rows: 16,
               spellcheck: false
             },
             classes:{
               elementContainer:"mui--text-dark-hint",
             },
-            styles: {
-              tdElement: "width:60%;",
-              element: "width:90%;"
-            },
-            icon: "settings_ethernet",
             values:{
               resetable:false
             }
@@ -761,7 +779,16 @@
 
             dataSettings: {
               label: "Data",
-              items: ["sourceDivider", "wholeSheet", "selectedRange", "columnDivider", "fromColumn", "toColumn", "weightColumn"]
+              items: ["sourceDivider", "wholeSheet", "selectedRange", "columnDivider", "fromColumn", "toColumn", "weightColumn","resetButton_dataSettings"],
+               on:{
+                enter:function (elementer,branch) {
+                  elementer.getElements().controls.resetButton_dataSettings.disabled = true;
+                  Process.reserveResetValues (elementer, branch);
+                },
+                exit:function (elementer, branch) {
+                  Process.restoreResetValues (Process.control.sankey.elementer , branch);
+                }
+              }
             },
             
   
@@ -789,7 +816,7 @@
             
             embedCode: {
               label: "Get",
-              items: ["svgCode"]
+              items: ["svgLabel","svgCode","resetButton_embedCode"]
             },
             
             arrangePreview: {
@@ -799,6 +826,9 @@
                 enter:function (elementer,branch) {
                   elementer.getElements().controls.resetButton_arrangePreview.disabled = true;
                   Process.reserveResetValues (elementer, branch);
+                },
+                exit:function (elementer, branch) {
+                  Process.restoreResetValues (Process.control.sankey.elementer , branch);
                 }
               }
             },
@@ -810,6 +840,9 @@
                 enter:function (elementer,branch) {
                  elementer.getElements().controls.resetButton_scaleRatio.disabled = true;
                   Process.reserveResetValues (elementer, branch);
+                },
+                exit:function (elementer, branch) {
+                  Process.restoreResetValues (Process.control.sankey.elementer , branch);
                 }
               }
             },
@@ -821,6 +854,9 @@
                 enter:function (elementer,branch) {
                   elementer.getElements().controls.resetButton_links.disabled = true;
                   Process.reserveResetValues (elementer, branch);
+                },
+                exit:function (elementer, branch) {
+                  Process.restoreResetValues (Process.control.sankey.elementer , branch);
                 }
               }
             },
@@ -833,6 +869,9 @@
                 enter:function (elementer,branch) {
                   elementer.getElements().controls.resetButton_nodes.disabled = true;
                   Process.reserveResetValues (elementer, branch);
+                },
+                exit:function (elementer, branch) {
+                  Process.restoreResetValues (Process.control.sankey.elementer , branch);
                 }
               }
             },
@@ -843,6 +882,9 @@
                 enter:function (elementer,branch) {
                   elementer.getElements().controls.resetButton_tooltips.disabled = true;
                   Process.reserveResetValues (elementer, branch);
+                },
+                exit:function (elementer, branch) {
+                  Process.restoreResetValues (Process.control.sankey.elementer , branch);
                 }
               }
             }
