@@ -4,19 +4,18 @@
 var Client = (function(client) {
   
   client.start = function () {
-    
-    // in case we're spinning
-    resetCursor();
-    
+
     // this'll call sync when there's any data change
     Process.control.watching.watcher.watch(function (current , pack, watcher) {
       Process.syncResult (current);
+      resetCursor();
     });
     
   };
 
-  client.insertImage = function (png) {
   
+  client.insertImage = function (png) {
+    
     spinCursor();
     disableButtons (true);
     
@@ -49,7 +48,6 @@ var Client = (function(client) {
   return client;
   
 })(Client || {});
-
 
 
 
