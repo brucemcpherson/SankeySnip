@@ -10,10 +10,24 @@ var App = (function startApp (app) {
     app.showNotification = function (header, text, toast) {
       DomUtils.elem('notification-header').innerHTML=header;
       DomUtils.elem('notification-message').innerHTML =text;
-      DomUtils.hide('notification-area',true, toast ? "notification-toast-header" : "notification-error-header"); 
-      DomUtils.hide('notification-header',true, toast ? "notification-toast-header" : "notification-error-header");  
-      DomUtils.hide('notification-message',true, toast ? "notification-toast-message" : "notification-error-message"); 
-      DomUtils.hide('notification-area',false);
+      if (toast) {
+        DomUtils.applyClass ("notification-area", false, "notification-error-header");
+        DomUtils.applyClass ("notification-area", true, "notification-toast-header");
+        DomUtils.applyClass('notification-header',false, "notification-error-header");  
+        DomUtils.applyClass('notification-message',false, "notification-error-message");  
+        DomUtils.applyClass('notification-header',true, "notification-toast-header");  
+        DomUtils.applyClass('notification-message',true, "notification-toast-message"); 
+      }
+      else {
+        DomUtils.applyClass ("notification-area", false, "notification-toast-header");
+        DomUtils.applyClass ("notification-area", true, "notification-error-header");
+        DomUtils.applyClass('notification-header',false, "notification-toast-header");  
+        DomUtils.applyClass('notification-message',false, "notification-toast-message");  
+        DomUtils.applyClass('notification-header',true, "notification-error-header");  
+        DomUtils.applyClass('notification-message',true, "notification-error-message"); 
+      }
+      DomUtils.hide ("notification-area", false);
+ 
     };
     
     app.hideNotification = function () {
@@ -35,4 +49,3 @@ var App = (function startApp (app) {
   
   return app;
 })(App || {});
-
