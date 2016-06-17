@@ -61,9 +61,19 @@ var DomUtils = (function(ns) {
     }
     return element;
   };
-  
+    
   /**
-  * hide a div
+  * apply a class to a div
+  * @param {element} element
+  * @param {boolean} addClass whether to remove or add
+  * @param {string} [className] the class
+  * @return {element} the div
+  */
+  ns.applyClass = function(element, addClass, className) {
+    return ns.hide (element , addClass , className)
+  };
+  /**
+  * apply a class to a div
   * @param {element} element
   * @param {boolean} addClass whether to remove or add
   * @param {string} [className] the class
