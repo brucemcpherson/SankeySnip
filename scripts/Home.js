@@ -15,7 +15,7 @@ var Home = (function (home) {
       // disable the button
       Process.control.buttons.generate.disabled = true;
       
-      Provoke.run("Server","generateTestData")
+      Provoke.run("Server","generateTestData",Process.control.sankey.testData)
       .then (function (result) {
         App.toast ("Sample data generated","You can delete this sheet at any time");
         finallyPromise();
@@ -102,10 +102,12 @@ var Home = (function (home) {
       });
     });
 
-    // this is about restoring settings if selected in the settings menus
+    // this is an apply button
+    // since they have already been applied then Apply = dont reset when exiting the settings page
     Process.control.buttons.reset.forEach(function(d) {
       d.addEventListener('click',function() {
-        Process.restoreResetValues (Process.control.sankey.elementer , d.id.match(/resetButton_(\w+)-elem/)[1]);
+       
+        Process.control.sankey.store.reset[d.id.match(/resetButton_(\w+)-elem/)[1]] = null;
         d.disabled = true;
       });
     });
