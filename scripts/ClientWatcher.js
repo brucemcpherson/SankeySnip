@@ -7,7 +7,7 @@
  */
 var ClientWatcher = (function (ns) {
   
-  var watchers_  = {},startTime_=0;;
+  var watchers_  = {},startTime_=0, pack_;
 
   // now clean it
   function cleanTheCamel_ (cleanThis) {
@@ -35,7 +35,7 @@ var ClientWatcher = (function (ns) {
     
     // default settings for a Watcher request
     var watch = Utils.vanMerge ([{
-      pollFrequency:2500,
+      pollFrequency:2500,                             // if this is 0, then polling is not done, and it needs self.poke()
       id: '' ,                                        // Watcher id
       watch: {
         active: true,                                 // whether to watch for changes to active
@@ -54,7 +54,7 @@ var ClientWatcher = (function (ns) {
         sheet: "",                                    // a sheet name - if not given, the active sheet will be used
         property:"Values",                            // Values,Backgrounds etc...
         fiddler:true                                  // whether to create a fiddler to mnipulate data (ignored for nondata property)
-      }        
+      }
     },options || {}]);
     
     // tidy up the parameter cases
@@ -189,7 +189,10 @@ var ClientWatcher = (function (ns) {
       }
       
     }
-
+    
+    self.getPack = function () {
+      return pack_;
+    };
     
     // convenience function to endlessly poll and callback on any changes
     self.watch = function (callback) {
@@ -199,6 +202,7 @@ var ClientWatcher = (function (ns) {
       self.start()
       .then (function(pack) {
 
+        
         if (pack.changed.active || pack.changed.data || pack.changed.sheets) {
           callback(current_, pack, self);
         }
@@ -210,7 +214,7 @@ var ClientWatcher = (function (ns) {
       })
       ['catch'](function(err) {
         // this will have been dealt with further up, but we still need to repoll
-        if (!stopped_) {
+        if (!stopped_ && watch_.pollFrequency) {
           self.watch(callback);
         }
       });
@@ -250,6 +254,9 @@ var ClientWatcher = (function (ns) {
           Provoke.run ("ServerWatcher", "poll", watch_)
           .then (
             function (pack) {
+              
+              // save this for interest
+              pack_ = pack;
               
               // if there's been some changes to data then store it
               if (pack.data) {
@@ -302,4 +309,3 @@ var ClientWatcher = (function (ns) {
   
   return ns;
 })(ClientWatcher || {});
-
