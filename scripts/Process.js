@@ -4,13 +4,14 @@
 */
 var Process = (function (process) {
   'use strict';
+  var ns = process;
   
   process.globals = {
     resetProperty:"ssnipSettings",
     purchaseLevel:'ssnipLevel',
     fullAccess:10,
     openAccess:true,
-    version:"2.0.13"
+    version:"2.1.0"
   };
   
   process.applyElementer  = function () {
@@ -21,9 +22,9 @@ var Process = (function (process) {
   
   
   process.initialize = function () {
-    
+
     var sankeySetup = Sankey.setup();
-    
+
     // this will create the structure for retrieving settings
     var elementer = Sankey.doElementer(sankeySetup);
     var elements = elementer.getElements();
@@ -46,6 +47,7 @@ var Process = (function (process) {
           reset:{
           }
         },
+        testData:getTestData(),
         auth:{}
       },
 
@@ -100,7 +102,8 @@ var Process = (function (process) {
           elements.controls.resetButton_scaleRatio,
           elements.controls.resetButton_nodes,
           elements.controls.resetButton_links,
-          elements.controls.resetButton_tooltips
+          elements.controls.resetButton_tooltips,
+          elements.controls.resetButton_dataSettings
         ],
         selectedRange:elements.controls.selectedRange,
         wholeSheet:elements.controls.wholeSheet
@@ -108,7 +111,7 @@ var Process = (function (process) {
       
       watching: {
         watcher:ClientWatcher.addWatcher({
-          pollingFrequency:3200,
+          pollingFrequency:3000,
           watch:{sheets:false,active:false},
           domain:{fiddler:false,scope:elements.controls.wholeSheet.checked ? "Sheet" : "Active"}
         })
@@ -119,8 +122,15 @@ var Process = (function (process) {
       }
       
     };
+    
 
 
+    /**
+     * test data for sample sheet
+     */
+    function getTestData() {
+        return [["Source", "Target", "Volume"], ["CHP", "Electricity", 58], ["CHP", "Losses", 60], ["Electricity", "Domestic", 71], ["Electricity", "Industry", 87], ["Electricity", "Other final", 77], ["Electricity", "Losses", 42], ["Electricity", "Non-energy", 13], ["Natural gas", "CHP", 62], ["Natural gas", "Industry", 90], ["Natural gas", "Losses", 22], ["Natural gas", "Non-energy", 13], ["Natural gas", "Power", 53], ["Coal", "CHP", 61], ["Coal", "Other", 64], ["Coal", "Power", 153], ["Crude oil", "Export", 58], ["Crude oil", "Refineries", 573], ["Nuclear", "Power", 228], ["Petroleum products", "Refineries", 324], ["Power", "Electricity", 222], ["Power", "Losses", 285], ["Refineries", "Domestic", 38], ["Refineries", "Export", 370], ["Refineries", "Industry", 30], ["Refineries", "Non-energy", 84], ["Refineries", "Other final", 33], ["Refineries", "Transport", 329], ["Renewables", "CHP", 75], ["Renewables", "Domestic", 41], ["Renewables", "Other final", 5], ["Renewables", "Power", 74], ["Renewables", "Transport", 15], ["CHP", "Industry", 80]]
+    }
     // get and apply any stored properties  
     return new Promise (function (resolve, reject) {
       
@@ -173,7 +183,10 @@ var Process = (function (process) {
   process.restoreResetValues = function (elementer , branch) {
     
     // merge them with the current settings and apply them to the chart
-    elementer.applySettings(Utils.vanMerge([elementer.getCurrent(),Process.control.sankey.store.reset[branch]]));
+          
+    if (Process.control.sankey.store.reset[branch]) {
+     elementer.applySettings(Utils.vanMerge([elementer.getCurrent(),Process.control.sankey.store.reset[branch]]));
+    }
     
     
   }
@@ -186,9 +199,10 @@ var Process = (function (process) {
     
     // all the current values
     var current = elementer.getCurrent();
-    
+   
     // the items on this page
     var items = elementer.getLayout().pages[branch].items;
+   
     
     // store the values on this page
     Process.control.sankey.store.reset[branch] = items.reduce(function (p,c) {
@@ -207,8 +221,9 @@ var Process = (function (process) {
     //disable inserting.. during construction
     process.control.buttons.insert.disabled  = true;
     
-    // no need to clear the chart first
+    // clear the chart first
     var clear = true;
+    
     
     var sc = process.control.chart;
     var sts = process.control.sankey.settings;
@@ -352,6 +367,7 @@ var Process = (function (process) {
           return row[d];
         }) 
       }) : [];
+
   }
   /**
   * fix up and store data received from server
@@ -363,12 +379,14 @@ var Process = (function (process) {
     
     // store it
     sc.result = result;
-    
+    // in syncresult
+  
     // make the headings
     if (result.data && (result.data.length || result.clear)) {
       
       sc.headings = result.data.length ? result.data[0] : [];
       sc.data = result.data.length > 1 ? result.data.slice(1) : [];
+// starting chart proceeedings
 
       
       // make the data into k.v pairs
