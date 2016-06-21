@@ -42,7 +42,7 @@ function Elementer() {
     tdElement: "mui--text-right mui--align-middle",
     tdLabel: "",
     icon: "mui--text-dark-secondary material-icons",
-    tdIcon: "mui--align-middle",
+    tdIcon: "",  // was align middle
     tdNextIcon:"mui--align-middle mui--text-right",
     option:"",
     nav: {
@@ -57,7 +57,7 @@ function Elementer() {
   var defStyles_ = {
     td: "padding:3px;",
     tdLabel: "padding:3px;",
-    tdIcon: "padding:3px;max-width:32px;",
+    tdIcon: "width:34px;padding:0px;margin:0;padding-top:4px;padding-left:3px;",  // was max-width:32, 3px padding
     tdElement: "padding:3px;",
     backLabel:"position:relative;vertical-align: middle;",
     icon:"vertical-align: middle;",
@@ -557,13 +557,12 @@ function Elementer() {
           
           else {
             var tr = ea(tab, "tr", "", fc.tr, fs.tr);
-            var used = 0;
+           
             
             // the icon is the first column
             if (ob.icon) {
               var td = ea(tr, "td", "", fc.tdIcon, fs.tdIcon);
               ea(td, "i", ob.icon, fc.icon);
-              used++;
             }
             
             // now the label
@@ -571,15 +570,15 @@ function Elementer() {
             if (ob.label) {
               var td = ea(tr, "td", "", fc.tdLabel, fs.tdLabel);
               var label =  ea(td, "label", DomUtils.fillLabel(ob.label), fc.label, fs.label) ;
-              used++;
+              if (!ob.icon) td.colSpan = 2;
+              if (!ob.tag && !ob.icon) td.colSpan = 4;
             }
             
             // the element.. if there's a tag we'll need a space for it
             if (ob.tag) {
-              used++;
               var td = ea(tr, "td", "", fc.tdElement, fs.tdElement);
             }
-            
+
             
           }
           
@@ -644,11 +643,7 @@ function Elementer() {
                 });
               });
             }
-            
-            if (!(ob.custom && ob.custom.outside)) {
-              // swallow up the rest
-              if (td)td.colSpan = 5 - used ;
-            }
+
             elements_.controls[d] = elem || elemCancel;
           }
           
