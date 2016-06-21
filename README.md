@@ -5,6 +5,6 @@ you can see [library and dependency information here](dependencies.md)
 
 The Sankey Snip Add-on documentation is [here](http://ramblings.mcpher.com/Home/excelquirks/addons/sankeyaddon "desktop liberation").
 
-You can do what you will with this source code - but this Sheets Add-on already exists, so don't just create another the same.
+You can pretty much do what you will with this source code (see http://ramblings.mcpher.com/Home/excelquirks/codeuse for more info) - but this Sheets Add-on already exists, so don't just create another the same. 
 
 
