@@ -1,3 +1,7 @@
+/**
+* sets up all listeners
+* @constructor Home
+*/
 
 var Home = (function (home) {
   'use strict';
@@ -7,7 +11,42 @@ var Home = (function (home) {
   // The initialize function must be run to activate elements
   ns.initialize = function (reason) {
 
+    // enable premium features
+    if (Process.control.sankey.premium) {
+      DomUtils.hide(Process.control.buttons.export, false);
+    }
 
+    // this will be activated in a future version
+    // perhaps in a premium version
+    Process.control.buttons.export.addEventListener('click' , function () {
+      
+      // export a drive file
+      DomUtils.hide('spinner', false);
+      Process.control.buttons.export = true;
+      
+      var drapp = "Driv" + "eApp";
+      var current = Process.control.watching.watcher.getCurrent();
+      if (current) {
+        var pack = {
+          options:Process.control.watching.watcher.getCurrent(),
+          dataSource:current.dataSource,
+          data:current.data
+        };
+        try {
+          var file = drapp.createFile('x', JSON.stringify(pack));
+          App.toast("Chart data exported", file.getName() + "(" + file.getName() + ")");
+        }
+        catch(err) {
+          App.showNotification ("Error exporting file",err);
+        }
+      }
+      
+      DomUtils.hide('spinner', true);
+      Process.control.buttons.export.disabled = false;
+      
+    });
+    
+    
     Process.control.buttons.generate.addEventListener('click',function () {
     
       // spin the cursor
