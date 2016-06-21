@@ -59,7 +59,13 @@ var ServerWatcher = (function (ns) {
     // start building the result
     var pack = {
       checksum:watch.checksum,
-      changed:{}
+      changed:{},
+      dataSource:{
+        id:ss.getId(),
+        sheet:sh.getName(),
+        range:r.getA1Notation(),
+        dataRange:sh.getDataRange().getA1Notation()
+      }
     };
 
     // get data if requested
