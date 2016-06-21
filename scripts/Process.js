@@ -11,7 +11,7 @@ var Process = (function (process) {
     purchaseLevel:'ssnipLevel',
     fullAccess:10,
     openAccess:true,
-    version:"2.1.0"
+    version:"2.1.0.1"
   };
   
   process.applyElementer  = function () {
@@ -48,7 +48,11 @@ var Process = (function (process) {
           }
         },
         testData:getTestData(),
-        auth:{}
+        auth:{},
+        premium:false,
+        exportName:function () {
+          return 'sankeySnipExport-'+(new Date().getTime());
+        }
       },
 
       
@@ -94,6 +98,7 @@ var Process = (function (process) {
       buttons: {
         insert:DomUtils.elem("insert-button"),
         close:DomUtils.elem("close-button"),
+        export:DomUtils.elem("export-button"),
         manage:elements.controls.manageButton,
         apply:elements.controls.applyButton,
         generate:DomUtils.elem("generate-button"),
