@@ -107,7 +107,8 @@ var ClientWatcher = (function (ns) {
     var self = this;
     var current_ = {
       active:null,
-      data:null
+      data:null,
+      dataSource:null
     } ;
     var watch_ = watch, stopped_ = false;    
     
@@ -257,7 +258,8 @@ var ClientWatcher = (function (ns) {
               
               // save this for interest
               pack_ = pack;
-              
+              current_.dataSource = pack_.dataSource;
+
               // if there's been some changes to data then store it
               if (pack.data) {
                 
@@ -274,9 +276,11 @@ var ClientWatcher = (function (ns) {
                     return rejectActions(reject,err);
                   }
                 }
+                watch_.checksum.data = pack.checksum.data;
+                current_.data = pack.data;
               }
-              watch_.checksum.data = pack.checksum.data;
-              current_.data = pack.data;
+              
+
               
               // if there's been some changes to active positions
               if(pack.active) {
