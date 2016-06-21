@@ -1,4 +1,9 @@
- var Sankey = (function(sankey) {
+/**
+ * creates a sankey chart in the sidebar 
+ * monitors for data changes and replots if there are any
+ * details at http://ramblings.mcpher.com/Home/excelquirks/addons/sankeyaddon
+ */
+var Sankey = (function(sankey) {
     'use strict';
     
     
