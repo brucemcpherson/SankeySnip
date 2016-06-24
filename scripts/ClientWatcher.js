@@ -1,14 +1,14 @@
 
 /**
- * simulate Watcher with apps script
- * various changes server side can be watched for server side
- * and resolved client side
- * @constructor ClientWatcher
- */
+* simulate Watcher with apps script
+* various changes server side can be watched for server side
+* and resolved client side
+* @constructor ClientWatcher
+*/
 var ClientWatcher = (function (ns) {
   
   var watchers_  = {},startTime_=0, pack_;
-
+  
   // now clean it
   function cleanTheCamel_ (cleanThis) {
     return typeof cleanThis === "string" ? cleanThis.slice(0,1).toUpperCase() + cleanThis.slice(1) : cleanThis;
@@ -16,27 +16,28 @@ var ClientWatcher = (function (ns) {
   
   /**
   * return {object} all current Watchers, the id is the key
-   */
+  */
   ns.getWatchers = function () {
     return watchers_;
   };
   
   /**
-   * add a Watcher
-   * @param {object} options what to watch
-   * @param {string} [sheet] the sheet to watch if missing, watch the active sheet
-   * @param {string} [range] the range to watch - if missing, watch the whole sheet 
-   * @param {string} [property=Data] matches getData, getBackground
-   * @param {TYPES} [type=SHEET] the type of Watcher
-   * @param {number} pollFrequency in ms, how often to poll
-   * @return {ClientWatcher.Watcher} the Watcher
-   */
+  * add a Watcher
+  * @param {object} options what to watch
+  * @param {string} [sheet] the sheet to watch if missing, watch the active sheet
+  * @param {string} [range] the range to watch - if missing, watch the whole sheet 
+  * @param {string} [property=Data] matches getData, getBackground
+  * @param {TYPES} [type=SHEET] the type of Watcher
+  * @param {number} pollFrequency in ms, how often to poll
+  * @return {ClientWatcher.Watcher} the Watcher
+  */
   ns.addWatcher = function (options) {
     
     // default settings for a Watcher request
     var watch = Utils.vanMerge ([{
       pollFrequency:2500,                             // if this is 0, then polling is not done, and it needs self.poke()
       id: '' ,                                        // Watcher id
+      pollVisibleOnly:true,                           // just poll if the page is actually visible
       watch: {
         active: true,                                 // whether to watch for changes to active
         data: true,                                   // whether to watch for data content changes
@@ -53,7 +54,8 @@ var ClientWatcher = (function (ns) {
         range: "",                                    // if range, specifiy a range to watch
         sheet: "",                                    // a sheet name - if not given, the active sheet will be used
         property:"Values",                            // Values,Backgrounds etc...
-        fiddler:true                                  // whether to create a fiddler to mnipulate data (ignored for nondata property)
+        fiddler:true,                                 // whether to create a fiddler to mnipulate data (ignored for nondata property)
+        applyFilters:false                            // whether to apply filters
       }
     },options || {}]);
     
@@ -62,16 +64,16 @@ var ClientWatcher = (function (ns) {
       watch.domain[k] = cleanTheCamel_ (watch.domain[k]);
     });
     watch.id = watch.id || ('w' + Object.keys(watchers_).length);
-
+    
     // add to the registry
     return (watchers_[watch.id] = ns.newWatcher(watch));
   };
   
   /**
-   * remove a Watcher
-   * @param {string||object} id the id or object
-   * @return {ClientWatcher} self
-   */
+  * remove a Watcher
+  * @param {string||object} id the id or object
+  * @return {ClientWatcher} self
+  */
   ns.removeWatcher = function (watcher) {
     var id = Utils.isVanObject(watcher) ? watcher.id : watcher;
     if (!id || watchers_[id]) {
@@ -82,26 +84,26 @@ var ClientWatcher = (function (ns) {
     return ns;
   };
   /**
-   * return a specifc Watcher
-   * @param {string} id the Watcher
-   * @return {ClientWatcher.watcher} the Watcher
-   */
+  * return a specifc Watcher
+  * @param {string} id the Watcher
+  * @return {ClientWatcher.watcher} the Watcher
+  */
   ns.getWatcher = function (id) {
     return watchers_[id];
   };
-
+  
   /**
-   * used to create a new Watcher object
-   * @return {ClientWatcher.Watcher}
-   */
+  * used to create a new Watcher object
+  * @return {ClientWatcher.Watcher}
+  */
   ns.newWatcher = function (watch) {
     return new ns.Watcher(watch);
   }
   /**
-   * this is a Watcher object
-   * @param {object} watch the Watcher resource
-   * @return {ClientWatcher.Watcher}
-   */
+  * this is a Watcher object
+  * @param {object} watch the Watcher resource
+  * @return {ClientWatcher.Watcher}
+  */
   ns.Watcher = function (watch) {
     
     var self = this;
@@ -119,7 +121,8 @@ var ClientWatcher = (function (ns) {
       responded:0,    // time responded
       errors:0 ,      // number of errors
       hits:0,         // how many times a change was detected
-      totalWaiting:0  //  time spent waiting for server response
+      totalWaiting:0,  //  time spent waiting for server response
+      idle:0          // no of times we didnt bother polling
     };
     
     self.start = function () {
@@ -155,17 +158,17 @@ var ClientWatcher = (function (ns) {
     };
     
     /**
-     * if you want the latest status
-     * @return {object} status
-     */
+    * if you want the latest status
+    * @return {object} status
+    */
     self.getStatus = function () {
       return status_;
     };
     
     /**
-     * do the next polling after waiting some time
-     * @return {Promise}
-     */
+    * do the next polling after waiting some time
+    * @return {Promise}
+    */
     function nextPolling_ (immediate) {
       return new Promise(function (resolve,reject) {
         setTimeout ( function () {
@@ -202,7 +205,7 @@ var ClientWatcher = (function (ns) {
       }
       self.start()
       .then (function(pack) {
-
+        
         
         if (pack.changed.active || pack.changed.data || pack.changed.sheets) {
           callback(current_, pack, self);
@@ -222,11 +225,11 @@ var ClientWatcher = (function (ns) {
     };
     
     /**
-     * this returns a promise
-     * which will be resolved when the server sends back changed data
-     * and rejected when there is no change
-     * @return {Promise}
-     */
+    * this returns a promise
+    * which will be resolved when the server sends back changed data
+    * and rejected when there is no change
+    * @return {Promise}
+    */
     self.poll = function () {
       
       status_.requested = new Date().getTime();
@@ -252,63 +255,70 @@ var ClientWatcher = (function (ns) {
       function pollWork () {
         return new Promise(function (resolve, reject) {
           
-          Provoke.run ("ServerWatcher", "poll", watch_)
-          .then (
-            function (pack) {
-              
-              // save this for interest
-              pack_ = pack;
-              current_.dataSource = pack_.dataSource;
-
-              // if there's been some changes to data then store it
-              if (pack.data) {
+          // check for visibility.. if not visible, then don't bother polling
+          if (pack_ && watch_.pollVisibleOnly && !ifvisible.now() ) {
+            status_.idle++;
+            finallyActions();
+            resolve(pack_);
+          }
+          else {
+            
+            Provoke.run ("ServerWatcher", "poll", watch_)
+            .then (
+              function (pack) {
+                // save this for interest
+                pack_ = pack;
+                current_.dataSource = pack_.dataSource;
                 
-                if (watch_.domain.fiddler && watch_.domain.property === "Values") {
-                  // it may fail because data is in midde of being updated
-                  // but that's - it'll get it next time.
-                  try {
-                    current_.fiddler = new Fiddler().setValues(pack.data);
+                // if there's been some changes to data then store it
+                if (pack.data) {
+                  
+                  if (watch_.domain.fiddler && watch_.domain.property === "Values") {
+                    // it may fail because data is in midde of being updated
+                    // but that's - it'll get it next time.
+                    try {
+                      current_.fiddler = new Fiddler().setValues(pack.data);
+                    }
+                    catch (err) {
+                      // dont want to count this as a valid piece of data yet
+                      // so we'll pass on this poll result and treat it as a reject
+                      
+                      return rejectActions(reject,err);
+                    }
                   }
-                  catch (err) {
-                    // dont want to count this as a valid piece of data yet
-                    // so we'll pass on this poll result and treat it as a reject
-                    
-                    return rejectActions(reject,err);
-                  }
+                  watch_.checksum.data = pack.checksum.data;
+                  current_.data = pack.data;
                 }
-                watch_.checksum.data = pack.checksum.data;
-                current_.data = pack.data;
-              }
-              
-
-              
-              // if there's been some changes to active positions
-              if(pack.active) {
-                current_.active = pack.active;
-                watch_.checksum.active = pack.checksum.active;
-              }
-              
-              // if there's been some changes to sheets then store it
-              if (pack.sheets) {
-                current_.sheets = pack.sheets;
-                watch_.checksum.sheets = pack.checksum.sheets;
-              }
-              
-              if (pack.data || pack.active || pack.sheets) {
-                status_.hits++;
-              }
-              finallyActions();
-              resolve (pack);
-            })
-          ['catch'](function (err) {
-            // sometimes there will be network errors which can generally be ignored..
-            rejectActions (reject, err);
-          });
+                
+                
+                
+                // if there's been some changes to active positions
+                if(pack.active) {
+                  current_.active = pack.active;
+                  watch_.checksum.active = pack.checksum.active;
+                }
+                
+                // if there's been some changes to sheets then store it
+                if (pack.sheets) {
+                  current_.sheets = pack.sheets;
+                  watch_.checksum.sheets = pack.checksum.sheets;
+                }
+                
+                if (pack.data || pack.active || pack.sheets) {
+                  status_.hits++;
+                }
+                finallyActions();
+                resolve (pack);
+              })
+            ['catch'](function (err) {
+              // sometimes there will be network errors which can generally be ignored..
+              rejectActions (reject, err);
+            });
+          }
         });
         
       }
     };
-    
   };
   
   return ns;
