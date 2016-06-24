@@ -134,7 +134,10 @@ var Sankey = (function(sankey) {
             template: "dividerTemplate",
             label: "Source data"
           },
-          
+          filterDivider: {
+            template: "dividerTemplate",
+            label: "Filtering"
+          },
           columnDivider: {
             template: "dividerTemplate",
             label: "Columns"
@@ -361,10 +364,25 @@ var Sankey = (function(sankey) {
               }
             }
           },
+          
           weightColumn: {
             template: "selectTemplate",
             label: "Weight column",
             icon: "network_check",
+            values:{
+              resetable:true
+            },
+            on: {
+              change: function (elementer, branch , ob,e) {
+                elementer.getElements().controls.resetButton_dataSettings.disabled = false;
+              }
+            }
+          },
+          
+          applyFilters: {
+            template: "checkboxTemplate",
+            label: "Respect filters in data",
+            icon: "filter_list",
             values:{
               resetable:true
             },
@@ -784,7 +802,8 @@ var Sankey = (function(sankey) {
 
             dataSettings: {
               label: "Data",
-              items: ["sourceDivider", "wholeSheet", "selectedRange", "columnDivider", "fromColumn", "toColumn", "weightColumn","resetButton_dataSettings"],
+              items: ["sourceDivider", "wholeSheet", "selectedRange", "columnDivider", 
+                      "fromColumn", "toColumn", "weightColumn","filterDivider","applyFilters","resetButton_dataSettings"],
                on:{
                 enter:function (elementer,branch) {
                   elementer.getElements().controls.resetButton_dataSettings.disabled = true;
