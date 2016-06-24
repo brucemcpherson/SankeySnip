@@ -244,6 +244,15 @@ var Home = (function (home) {
       });
     },false);
 
+    // this one is about whether to apply filters
+    var elem = Process.control.sankey.elementer.getElements().controls.applyFilters;
+    Process.control.watching.watcher.getWatching().domain.applyFilters =  elem.checked;
+    elem.addEventListener('change', function () {
+      var w = Process.control.watching.watcher;
+      w.getWatching().domain.applyFilters =  elem.checked;
+      w.poke()
+    });
+
   };
 
 
