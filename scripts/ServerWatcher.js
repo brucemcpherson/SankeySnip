@@ -70,7 +70,22 @@ var ServerWatcher = (function (ns) {
 
     // get data if requested
     if (watch.watch.data) {
-      var values = r['get'+watch.domain.property]();
+
+      // see if filters are being respected
+      if (watch.domain.applyFilters && watch.domain.property === "Values") {
+
+          var values = new SheetsMore.SheetsMore()
+          .setAccessToken(ScriptApp.getOAuthToken())
+          .setId(SpreadsheetApp.getActiveSpreadsheet().getId())
+          .setApplyFilterViews(false)
+          .applyFilters()
+          .getValues(r)
+          .filteredValues;
+        
+      }
+      else {
+        var values = r['get'+watch.domain.property]();
+      }
       var cs = Utils.keyDigest(values);
       pack.changed.data = cs !== pack.checksum.data;
       if (pack.changed.data) {
