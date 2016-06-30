@@ -1,49 +1,3 @@
-function test () {
-
-
-  // this creates a new filter processing ob
-  var sMore = new SheetsMore()
-  .setAccessToken(ScriptApp.getOAuthToken())
-  .setId("1CfYSJDTWtpCByMAzCsJ82iZVo_FPxQbo0cFTCiwnfp8")
-  .setApplyFilterViews(true);
-  
-  // this should be done to fetch and apply the current filter state
-  sMore.applyFilters();
-
-  // test out all the sheets in the given book
-  var testBook = SpreadsheetApp.openById(sMore.getId());
-  testBook.getSheets()
-  .forEach(function(d) {
-    // tells if the data is filtered for the given range
-    Logger.log(d.getName() +':'+sMore.isFiltered (d.getDataRange()));
-    
-    // gets the values + the filtered values -- THIS IS WORK IN PROGRESS and writes the selected data out to another sheet
-    var result = sMore.getValues(d.getDataRange());
-    
-    // use the filtered values (for allValues use result.allValues);
-    var values = result.filteredValues;
-    
-    // write out a copy of the sheet with just the filtered values.
-    var resultSheet = testBook.getSheetByName(d.getName()+"Results");
-    if (resultSheet) {
-      resultSheet.clearContents();
-      if (values.length) {
-        resultSheet.getRange(1,1,values.length,values[0].length).setValues(values);
-      }
-    }
-    
-    // do a partial range test
-    var partialSheet = testBook.getSheetByName(d.getName()+"Partial");
-    if (partialSheet) {
-      var result = sMore.getValues(d.getRange('b2:d4'));
-      var values = result.filteredValues;
-      partialSheet.clearContents();
-      if (values.length) {
-        partialSheet.getRange(1,1,values.length,values[0].length).setValues(values);
-      }
-    }
-  });
-}
 
 /*
 * extend SpreadsheetApp with some stuff from the 
@@ -51,7 +5,7 @@ function test () {
 * @constructor SheetsMore
 */
 var SheetsMore = function() {
-
+  
   var self  = this, accessToken_, id_, filters_, applyFilterViews_ =true;
   
   /**
@@ -59,10 +13,44 @@ var SheetsMore = function() {
   * @param {boolean} applyViews whether to apply
   * @return {SheetsMore} self
   */
-  self.setApplyFilterViews = function (applyViews) {
+  self.enableFilterViews = function (applyViews) {
     applyFilterViews_ = applyViews;
     return self;
   };
+  
+  // synonym to be deprecataed
+  self.setApplyFilterViews = self.enableFilterViews;
+  
+  /**
+  * set filters in place in this sheet
+  * @return {SheetsMore} self
+  */
+  self.applyFiltersToData = function() {
+    
+    var result = urlExecute_ (id_,  [encodeFields_ (getSheetIdDefs_() , getFilterViewDefs_() , getFilterDefs_())]);
+    if (result.success) {
+      filters_ = result.data.sheets;
+    }
+    else {
+      Logger.log(result);
+    }
+    
+    return self;
+  };
+  
+  // deprecate this eventually
+  self.applyFilters = self.applyFiltersToData;
+  
+ /**
+  * see if any filters overlap
+  * @param {Range} range the range=SpreadsheetApp.getActiveRange()
+  * @return {boolean} if filters overlap
+  */
+  self.isDataFiltered = function (range) {
+    return getFiltered_(range).length ? true : false;
+  };
+  // to be deprecated
+  self.isFiltered = self.isDataFiltered;
   
   /**
   * set up the access token
@@ -76,19 +64,19 @@ var SheetsMore = function() {
   };
   
   /**
-   * set the spreadsheet
-   * @param {string} id the spreadsheet id
-   * @return {SheetsMore) self
-   */
+  * set the spreadsheet
+  * @param {string} id the spreadsheet id
+  * @return {SheetsMore) self
+  */
   self.setId = function (id) {
     id_ = id;
     return self;
   };
-   
+  
   /**
-   * get the spreadsheet
-   * @return {string} the id 
-   */
+  * get the spreadsheet
+  * @return {string} the id 
+  */
   self.getId = function () {
     return id_;
   };
@@ -107,14 +95,14 @@ var SheetsMore = function() {
     
     //found somethig different here - the array is jagged in this API, so pad it out to make it look like apps script
     var maxWidth = result.data.values.reduce(function (p,c) {
-      return Math.max (c.length, p);
+    return Math.max (c.length, p);
     }, 0);
     
     var values = result.data.values.map (function (d) {
-      for (var i = d.length; i < maxWidth ;i++) {
-        d.push("");
-      }
-      return d;
+    for (var i = d.length; i < maxWidth ;i++) {
+    d.push("");
+    }
+    return d;
     });
     */
     
@@ -124,12 +112,12 @@ var SheetsMore = function() {
     });
     
     // get any filtering that needs to be done
-    var filters = self.getFiltered(range);
-
+    var filters = getFiltered_(range);
+    
     
     // play around with validation for filter rules .. dont think this approach will be viable
     var play = null;  // probably wont do this... containsConditions_(filters) ?  copyToValidate_ (range) : null;
-
+    
     // filter those values
     var filterMap = filterMap_ (filters, values,range);
     
@@ -156,30 +144,23 @@ var SheetsMore = function() {
       });
     }
   };
- 
-  /**
-  * see if any filters overlap
-  * @param {Range} range the range=SpreadsheetApp.getActiveRange()
-  * @return {boolean} if filters overlap
-  */
-  self.isFiltered = function (range) {
-    return self.getFiltered(range).length ? true : false;
-  };
+  
+
   
   /**
   * see what filters overlap
   * @param {Range} range the range=SpreadsheetApp.getActiveRange()
   * @return {[object]} array of objects overlapping this range
   */
-  self.getFiltered = function (range) {
+  function getFiltered_ (range) {
     
     // the given range
     var sci = range.getColumn(),
         sri = range.getRowIndex(),
         eci = range.getNumColumns()+ sci -1,
-        eri = range.getNumRows() + sri - 1,
-        sheet = range.getSheet(),
-        sheetId = sheet.getSheetId();
+          eri = range.getNumRows() + sri - 1,
+            sheet = range.getSheet(),
+              sheetId = sheet.getSheetId();
     
     // for this sheets, find any matching- 
     return (filters_||[]).filter (function (d) {
@@ -195,33 +176,15 @@ var SheetsMore = function() {
       }
       return p;
     },[]);
-
+    
     function overlap_ (ob) {
       // start row/column are zero based, ends are 1 based
       return !ob || !( sci > ob.endColumnIndex || eci < ob.startColumnIndex +1 || sri > ob.endRowIndex || eri < ob.startRowIndex +1);
     }
- 
-  };
-  /**
-   * set filters in place in this sheet
-   * @return {SheetsMore} self
-   */
-  self.applyFilters = function() {
-  
-    var result = urlExecute_ (id_,  [encodeFields_ (getSheetIdDefs_() , getFilterViewDefs_() , getFilterDefs_())]);
-    if (result.success) {
-      filters_ = result.data.sheets;
-    }
-    else {
-     Logger.log(result);
-    }
     
-    return self;
-  }; 
-  
-  self.getFilters = function () {
-    return filters_;
   };
+  
+  
   
   // Local functions 
   
@@ -234,11 +197,11 @@ var SheetsMore = function() {
       copy.setName("delete-" + sheet.getName() + "-" + new Date().getTime().toString(32));
       return copy;
     });
-
+    
   }
   
   function filterMap_ (filters, values,range) {
-
+    
     // generate a map to show which row indexes were included
     // TODO some offset work if the values don't correspond to the sheet datarange... 
     // if the filterrange,valuesrange start at different places there's a bug in here that I havent tracked down
@@ -252,9 +215,9 @@ var SheetsMore = function() {
     var rowOffset = 0;
     
     return values.reduce(function (p,row) {
-
+      
       if (filters.every(function (f) {
-
+        
         return !f.criteria || Object.keys(f.criteria).every(function(c){
           // the criteria column numbers are 0 based
           var colOffset = parseInt (c , 10);
@@ -264,15 +227,15 @@ var SheetsMore = function() {
           
           // returns true if it's a keepable value
           var keep = true;
-
+          
           // always keep the header row,, otherwise check if its within range
-  
+          
           if ( (rowOffset || rowStartOffset !==f.range.startIndex)  && applies_(f.range,rowOffset + rowStartOffset,colOffset + colStartOffset)) {
-
+            
             // there are no hidden value matches
-
+            
             if (keep && f.criteria[colOffset].hiddenValues) {
-               keep = !f.criteria[colOffset].hiddenValues.some(function (h) {
+              keep = !f.criteria[colOffset].hiddenValues.some(function (h) {
                 return matches_ (row[valuesColumn] , h) ; 
               });
             }
@@ -281,10 +244,10 @@ var SheetsMore = function() {
             if (keep && f.criteria[colOffset].condition) {
               keep =  conditionValueMatches_ (row[valuesColumn] , f.criteria[colOffset].condition) ; 
             }
-          
+            
           }
           return keep;
-
+          
         }); 
       })){
         p.push (rowOffset);
@@ -297,7 +260,7 @@ var SheetsMore = function() {
       // starts seem to be offsets (0 based), ends are indexes (1 based)
       return !ob || (
         !(colOffset >= ob.endColumnIndex  || colOffset < ob.startColumnIndex || rowOffset >= ob.endRowIndex || rowOffset < ob.startRowIndex));
-
+      
     }
     
     // there will probably be fuzzy versions of this to introduce
@@ -319,7 +282,7 @@ var SheetsMore = function() {
   }
   // 
   var conditionValueMatch_ = (function () {
-
+    
     // utility matchers
     function textContains (a,b) {
       return a.indexOf(b) !== -1;
@@ -331,7 +294,7 @@ var SheetsMore = function() {
       if (condition.values.length !== n) throw new Error ('condition ' + condition.type + ' requires ' + n + ' values');
       return true;
     }
-
+    
     // also a value can be a formula    
     // if its a number test.. then non numbers are filtered out
     return {
@@ -376,10 +339,10 @@ var SheetsMore = function() {
       }
       
     }
-      
-      
+    
+    
   })();
-
+  
   /* examples
   [{criteria={2={condition={values=[{userEnteredValue=2}, {userEnteredValue=3}], type=NUMBER_BETWEEN}}}, range={endColumnIndex=3, endRowIndex=8, sheetId=1786114223, startColumnIndex=0, startRowIndex=0}}]
   [{criteria={0={condition={values=[{userEnteredValue=hide}], type=TEXT_NOT_CONTAINS}}}, range={endColumnIndex=2, endRowIndex=5, sheetId=1750522359, startColumnIndex=0, startRowIndex=0}}]
@@ -401,7 +364,7 @@ var SheetsMore = function() {
         "Authorization": "Bearer " + accessToken_
       }
     }, options]);
-
+    
     // the param string
     if (params) {
       var paramString = params.isArray ? params.join ("&") : params;
@@ -414,7 +377,7 @@ var SheetsMore = function() {
     
     // trnsmit what happened
     if (response.getResponseCode() !== 200) {
-    
+      
       return {
         response:response, 
         success:false,
@@ -424,14 +387,14 @@ var SheetsMore = function() {
     else {
       try {
         var ob = JSON.parse (response.getContentText());
-
+        
         return{
           response:response,
           data:ob,
           success:!ob.error,
           err:ob.error
         }; 
-
+        
         
       }
       catch (err) {
@@ -454,25 +417,25 @@ var SheetsMore = function() {
   }
   
   /**
-   * these are the partial field definitions for basic filter definitions
-   * @return {string} fields needed
-   */
+  * these are the partial field definitions for basic filter definitions
+  * @return {string} fields needed
+  */
   function getFilterDefs_ () {
     return 'sheets(basicFilter(criteria,range))';
   }
   
   /**
-   * these are the partial field definitions for basic filter definitions
-   * @return {string} fields needed
-   */
+  * these are the partial field definitions for basic filter definitions
+  * @return {string} fields needed
+  */
   function getFilterViewDefs_ () {
     return 'sheets(filterViews(criteria,range))';
   }
   
   /**
-   * get the sheetid
-   * @return {string} id field
-   */
+  * get the sheetid
+  * @return {string} id field
+  */
   function getSheetIdDefs_ () {
     return 'sheets(properties(sheetId,title))';
   }
@@ -491,6 +454,6 @@ var SheetsMore = function() {
     }
   }
   
-
+  
 };
 
