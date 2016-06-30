@@ -110,7 +110,8 @@ var ClientWatcher = (function (ns) {
     var current_ = {
       active:null,
       data:null,
-      dataSource:null
+      dataSource:null,
+      filterMap:null
     } ;
     var watch_ = watch, stopped_ = false;    
     
@@ -273,6 +274,7 @@ var ClientWatcher = (function (ns) {
                 // if there's been some changes to data then store it
                 if (pack.data) {
                   
+                  current_.filterMap = pack_.filterMap;
                   if (watch_.domain.fiddler && watch_.domain.property === "Values") {
                     // it may fail because data is in midde of being updated
                     // but that's - it'll get it next time.
