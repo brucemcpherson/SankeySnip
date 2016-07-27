@@ -1,5 +1,5 @@
 # Google Apps Script Project: SankeySnip
-This repo (SankeySnip) was automatically updated on 30 June 2016 16:40:25 BST by GasGit
+This repo (SankeySnip) was automatically updated on 27 July 2016 10:37:44 BST by GasGit
 
 For more information see the [desktop liberation site](http://ramblings.mcpher.com/Home/excelquirks/drivesdk/gettinggithubready "desktop liberation") or [contact me on G+](https://plus.google.com/+BruceMcpherson "Bruce McPherson - GDE")
 ## Details for Apps Script project SankeySnip
@@ -37,11 +37,11 @@ Server| server_js
 ### Directly referenced libraries
 *library*|*identifier*|*key*|*version*|*dev mode*|*source*|
 --- | --- | --- | --- | --- | --- 
-SheetsMore| SheetsMore|MLq177PP0_OgZXWkBsrh5giz3TLx7pV4j|unknown|no|[here](libraries/SheetsMore "library source")
+SheetsMore| SheetsMore|MLq177PP0_OgZXWkBsrh5giz3TLx7pV4j|2|no|[here](libraries/SheetsMore "library source")
 ### All dependencies and sub dependencies
 *library*|*identifier*|*key*|*version*|*dev mode*|*source*|
 --- | --- | --- | --- | --- | --- 
-SheetsMore| SheetsMore|MLq177PP0_OgZXWkBsrh5giz3TLx7pV4j|unknown|no|[here](libraries/SheetsMore "library source")
+SheetsMore| SheetsMore|MLq177PP0_OgZXWkBsrh5giz3TLx7pV4j|2|no|[here](libraries/SheetsMore "library source")
 cUseful| cUseful|Mcbr-v4SsYKJP7JMohttAZyz3TLx7pV4j|60|no|[here](libraries/cUseful "library source")
 ### Enabled Google Services
 *library*|*identifier*|*version*
