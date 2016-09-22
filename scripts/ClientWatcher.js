@@ -38,7 +38,7 @@ var ClientWatcher = (function (ns) {
       pollFrequency:2500,                             // if this is 0, then polling is not done, and it needs self.poke()
       id: '' ,                                        // Watcher id
       pollVisibleOnly:true,                           // just poll if the page is actually visible
-      watch: {
+      rules: {
         active: true,                                 // whether to watch for changes to active
         data: true,                                   // whether to watch for data content changes
         sheets:true                                   // watch for changes in number/names of sheets
