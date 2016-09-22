@@ -69,7 +69,7 @@ var ServerWatcher = (function (ns) {
     };
 
     // get data if requested
-    if (watch.watch.data) {
+    if (watch.rules.data) {
 
       // see if filters are being respected
       if (watch.domain.applyFilters && watch.domain.property === "Values") {
@@ -95,7 +95,7 @@ var ServerWatcher = (function (ns) {
     }
     
     // provide sheets if requested
-    if (watch.watch.sheets) {
+    if (watch.rules.sheets) {
       var sheets = ss.getSheets().map(function(d) { return d.getName(); });
       var cs = Utils.keyDigest(sheets);
       pack.changed.sheets = cs !== pack.checksum.sheets;
@@ -106,7 +106,7 @@ var ServerWatcher = (function (ns) {
     }
     
     // provide active if requested
-    if (watch.watch.active) {
+    if (watch.rules.active) {
       var a = {
         id:ss.getId(),
         sheet:sh.getName(),
