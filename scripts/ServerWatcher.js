@@ -74,13 +74,15 @@ var ServerWatcher = (function (ns) {
       // see if filters are being respected
       if (watch.domain.applyFilters && watch.domain.property === "Values") {
 
-          var values = new SheetsMore.SheetsMore()
+          var v = new SheetsMore()
           .setAccessToken(ScriptApp.getOAuthToken())
           .setId(SpreadsheetApp.getActiveSpreadsheet().getId())
-          .setApplyFilterViews(false)
-          .applyFilters()
-          .getValues(r)
-          .filteredValues;
+          .enableFilterViews(false)
+          .applyFiltersToData()
+          .getValues(r);
+        
+          // but we just want the filteredvalues
+          var values = v.filteredValues;
         
       }
       else {
