@@ -1,5 +1,5 @@
 # Google Apps Script Project: SankeySnip
-This repo (SankeySnip) was automatically updated on 16 October 2016 15:29:14 BST by GasGit
+This repo (SankeySnip) was automatically updated on 20 November 2017 12:47:01 GMT by GasGit
 
 For more information see the [desktop liberation site](http://ramblings.mcpher.com/Home/excelquirks/drivesdk/gettinggithubready "desktop liberation") or [contact me on G+](https://plus.google.com/+BruceMcpherson "Bruce McPherson - GDE")
 ## Details for Apps Script project SankeySnip
@@ -47,6 +47,6 @@ cUseful| cUseful|Mcbr-v4SsYKJP7JMohttAZyz3TLx7pV4j|60|no|[here](libraries/cUsefu
 ### Enabled Google Services
 *library*|*identifier*|*version*
 --- | --- | --- 
-Drive| Drive|v2
+Drive| Drive|unknown
 ###Need more detail ?
 You can see [full project info as json here](info.json)
