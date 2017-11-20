@@ -32,7 +32,7 @@ var SheetsMore = function() {
       filters_ = result.data.sheets;
     }
     else {
-      Logger.log(result);
+      throw new Error (result.err);
     }
     
     return self;
