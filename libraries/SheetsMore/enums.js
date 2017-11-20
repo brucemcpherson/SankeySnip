@@ -1,18 +1,18 @@
 /** filter condition
 CONDITION_TYPE_UNSPECIFIED	The default value, do not use.
-.NUMBER_GREATER	The cell's value must be greater than the condition's value. Supported by data validation, conditional formatting and filters. Requires a single ConditionValue.
-.NUMBER_GREATER_THAN_EQ	The cell's value must be greater than or equal to the condition's value. Supported by data validation, conditional formatting and filters. Requires a single ConditionValue.
-.NUMBER_LESS	The cell's value must be less than the condition's value. Supported by data validation, conditional formatting and filters. Requires a single ConditionValue.
-.NUMBER_LESS_THAN_EQ	The cell's value must be less than or equal to the condition's value. Supported by data validation, conditional formatting and filters. Requires a single ConditionValue.
-.NUMBER_EQ	The cell's value must be equal to the condition's value. Supported by data validation, conditional formatting and filters. Requires a single ConditionValue.
-.NUMBER_NOT_EQ	The cell's value must be not equal to the condition's value. Supported by data validation, conditional formatting and filters. Requires a single ConditionValue.
-.NUMBER_BETWEEN	The cell's value must be between the two condition values. Supported by data validation, conditional formatting and filters. Requires exactly two ConditionValues.
-.NUMBER_NOT_BETWEEN	The cell's value must not be between the two condition values. Supported by data validation, conditional formatting and filters. Requires exactly two ConditionValues.
-.TEXT_CONTAINS	The cell's value must contain the condition's value. Supported by data validation, conditional formatting and filters. Requires a single ConditionValue.
-.TEXT_NOT_CONTAINS	The cell's value must not contain the condition's value. Supported by data validation, conditional formatting and filters. Requires a single ConditionValue.
-.TEXT_STARTS_WITH	The cell's value must start with the condition's value. Supported by data validation, conditional formatting and filters. Requires a single ConditionValue.
-.TEXT_ENDS_WITH	The cell's value must end with the condition's value. Supported by data validation, conditional formatting and filters. Requires a single ConditionValue.
-.TEXT_EQ	The cell's value must be exactly the condition's value. Supported by data validation, conditional formatting and filters. Requires a single ConditionValue.
+.done.NUMBER_GREATER	The cell's value must be greater than the condition's value. Supported by data validation, conditional formatting and filters. Requires a single ConditionValue.
+.done.NUMBER_GREATER_THAN_EQ	The cell's value must be greater than or equal to the condition's value. Supported by data validation, conditional formatting and filters. Requires a single ConditionValue.
+.done.NUMBER_LESS	The cell's value must be less than the condition's value. Supported by data validation, conditional formatting and filters. Requires a single ConditionValue.
+.done.NUMBER_LESS_THAN_EQ	The cell's value must be less than or equal to the condition's value. Supported by data validation, conditional formatting and filters. Requires a single ConditionValue.
+.done.NUMBER_EQ	The cell's value must be equal to the condition's value. Supported by data validation, conditional formatting and filters. Requires a single ConditionValue.
+.done.NUMBER_NOT_EQ	The cell's value must be not equal to the condition's value. Supported by data validation, conditional formatting and filters. Requires a single ConditionValue.
+.done.NUMBER_BETWEEN	The cell's value must be between the two condition values. Supported by data validation, conditional formatting and filters. Requires exactly two ConditionValues.
+.done.NUMBER_NOT_BETWEEN	The cell's value must not be between the two condition values. Supported by data validation, conditional formatting and filters. Requires exactly two ConditionValues.
+.done.TEXT_CONTAINS	The cell's value must contain the condition's value. Supported by data validation, conditional formatting and filters. Requires a single ConditionValue.
+.done.TEXT_NOT_CONTAINS	The cell's value must not contain the condition's value. Supported by data validation, conditional formatting and filters. Requires a single ConditionValue.
+.done.TEXT_STARTS_WITH	The cell's value must start with the condition's value. Supported by data validation, conditional formatting and filters. Requires a single ConditionValue.
+.done.TEXT_ENDS_WITH	The cell's value must end with the condition's value. Supported by data validation, conditional formatting and filters. Requires a single ConditionValue.
+.done.TEXT_EQ	The cell's value must be exactly the condition's value. Supported by data validation, conditional formatting and filters. Requires a single ConditionValue.
 TEXT_IS_EMAIL	The cell's value must be a valid email address. Supported by data validation. Requires no ConditionValues.
 TEXT_IS_URL	The cell's value must be a valid URL. Supported by data validation. Requires no ConditionValues.
 DATE_EQ	The cell's value must be the same date as the condition's value. Supported by data validation, conditional formatting and filters. Requires a single ConditionValue.
