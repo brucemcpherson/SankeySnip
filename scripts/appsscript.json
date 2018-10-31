@@ -1,0 +1,16 @@
+{
+  "timeZone": "Europe/London",
+  "dependencies": {
+    "enabledAdvancedServices": [{
+      "userSymbol": "Drive",
+      "serviceId": "drive",
+      "version": "v2"
+    }],
+    "libraries": [{
+      "userSymbol": "SheetsMore",
+      "libraryId": "14kDMORQL5oxUt2qfXcUTNb1RwRt4d6_7uAHRVPrjaiPGn6bM0H-7wctO",
+      "version": "2"
+    }]
+  },
+  "exceptionLogging": "STACKDRIVER"
+}
