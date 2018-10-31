@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <base target="_top">
+    <?!= Include.html(['cdn.css']); ?>
+    <?!= Include.css(['spinner','app']); ?>  
+  </head>
+  <body>
+   
+    <?!= Include.html(['appmarkup','cdn']); ?>  
+    <?!= Include.js(['main']); ?>
+    <?!= Include.gs(['ClientWatcher','Elementer','Utils', 
+    'Sankey' , 'Process'  ,'Home' ,'App', 
+    'Client','CanvasConvert','DomUtils','Provoke','Fiddler']); ?>
+
+  </body>
+</html>
