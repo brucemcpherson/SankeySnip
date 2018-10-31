@@ -1,0 +1,18 @@
+/**
+* Sankey snip app
+*/
+google.load ('visualization', '1.1', {'packages':['sankey']});
+google.setOnLoadCallback(function() {
+
+  // set up client app structure
+  App.initialize();
+  Process.initialize().then (function () { 
+    // set any listeners
+    Home.initialize();
+    // get some data to the client and start
+    Client.start();
+  });
+
+});
+    
+
