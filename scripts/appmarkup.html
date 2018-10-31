@@ -1,0 +1,102 @@
+<div id="content-wrapper">
+  <ul class="mui-tabs__bar mui-tabs__bar--justified">
+    <li class="mui--is-active"><a data-mui-toggle="tab" data-mui-controls="container">Chart</a></li>
+    <li><a data-mui-toggle="tab" data-mui-controls="elementer-root">Settings</a></li>
+    <li><a data-mui-toggle="tab" data-mui-controls="about-sankey">About</a></li>
+  </ul>
+
+  <div class="padding"></div>
+  <div id="container" class="mui-container mui-tabs__pane mui--is-active">
+    <div id="page-data-content">
+      <div class="chart" id="chart"></div>
+      <div class="mui-panel mui--hide" id="instructions">
+
+       To create data for this chart, you need 3 columns in the current sheet. Sankey snip will detect chartable data automatically, 
+       or you can customize the source data in the Settings/data section.
+       <table class="mui-table">
+       <thead><tr><th>Source</th><th>Target</th><th>Volume</th></tr></thead>
+       <tbody>
+       <tr><td>A</td><td>B</td><td>100</td></tr>
+       <tr><td>A</td><td>C</td><td>60</td></tr>
+       <tr><td>A</td><td>D</td><td>40</td></tr>
+       <tr><td colspan="3">etc..</td></tr>
+       </tbody>
+       </table>
+       <div>You can also generate some sample data</div>
+       <div class="padding"></div>
+       <button id="generate-button" class="create">GENERATE</button>
+       
+
+     </div>
+    </div>
+    
+  
+    <div id="main-buttons" class="button-place">
+    <div class="button-item">
+    <button id="insert-button" class="action " disabled>INSERT</button>
+    </div>
+    <div class="button-item">
+    <button id="close-button" class="">CLOSE</button>
+    </div>
+    <div class="button-item">
+    <button id="export-button" class="mui--hide create">EXPORT</button>
+    </div>
+    </div>
+  </div>
+
+  <div id="elementer-root" class="mui-tabs__pane mui-container">
+    <div id="elementer-content"></div>
+  </div>
+
+  <div id="about-sankey" class="mui-tabs__pane mui-container">
+    <h3>What is a Sankey chart?</h3>
+    <p>A Sankey chart or diagram, is a type of flow diagram that is used to visualize the flow of some resource between process nodes of a network. The width of the connectors represents the volume of flow between processes, and typically the overall volume of resource is preserved throughout
+      the system being visualized.Flows are unidirectional, and loops in the system (A sending to B and then B sending something back to A) are invalid. 
+      You can read more about <a href="http://www.sankey-diagrams.com/" target="_blank">Sankey charts here</a></p>
+
+    <p>Sankey Snip is a Google Sheets add-on/Office add-in which maintains a sankey chart preview in the sidebar of the active sheet's data in real time.</p>
+    <h3>Suitable types of data</h3>
+    <p>Sankey charts are often used to show transformations in a system (for example energy sources and uses), 
+    or material or money flows between a co-operating group. Google Analytics uses <a href="https://support.google.com/analytics/answer/1709395?hl=en"
+        target="_blank">this kind of diagram</a> to report on site navigation behavior.
+    </p>
+
+    <h4>Data format</h4>
+    <p>A Sankey chart needs 3 data items, which should be laid out as columns with headers in a sheet.</p>
+    <ul>
+      <li><b>Source</b>. Sending process name</li>
+      <li><b>Target</b>. Receiving process name</li>
+      <li><b>Volume</b>. Volume of flow between 'Source' and 'Target'</li>
+    </ul>
+    <p>By default, the source data columns will be automatically detected in the active sheet, 
+    but you can customize the column names and range via the Data Settings. 
+    Any changes you make to the data will periodically be reflected in the chart preview.</p>
+    <h3>Chart image</h3>
+    <p>You can get a scaled up version of the chart preview by copying the code shown in the Chart 
+    settings/embed code area. This will be in SVG format so that you can embed the code or link to the drive file in a web site or document.
+    </p>
+    <p>It is also possible to insert a static version of the chart in your sheet. 
+    The scale and look of the chart is controlled by options in Chart settings.</p>
+
+    <p>Google Charts are used for visualization. More information about settings and 
+    options <a href="https://developers.google.com/chart/interactive/docs/gallery/sankey" target="_blank">can be found here</a>.</p>
+    <p>Additional assistance with using this add-on is available at
+      <a href="http://ramblings.mcpher.com/Home/excelquirks/addons/sankeyaddon" target="_blank">desktop liberation</a></p>
+
+  </div>
+      <div id="notification-area" class="notification mui--hide">
+      <div class="notification-header">
+        <span id="notification-header" class="notification-header-content"></span>
+        <span id="notification-close" class="mui--pull-right"><i class="mui--text-light material-icons">close</i></span>
+      </div>
+      <div id="notification-message" class="notification-message"></div>
+    </div>
+    
+    <div class="spinner-container" id="spinner">
+      <svg class="spinner" width="33px" height="33px" viewBox="0 0 35 35" xmlns="http://www.w3.org/2000/svg">
+        <circle class="path" fill="none" stroke-width="4" stroke-linecap="round" cx="17" cy="17" r="15"></circle>
+      </svg>
+    </div>
+    <div class="ghost mui--hide" id="ghost"></div>
+
+</div>
