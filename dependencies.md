@@ -1,7 +1,13 @@
 # Google Apps Script Project: SankeySnip
-This repo (SankeySnip) was automatically updated on 31 October 2018 11:42:56 GMT by GasGit
+This repo (SankeySnip) was automatically updated on 8/13/2021, 3:45:10 PM by GasGit
 
-For more information see the [desktop liberation site](https://ramblings.mcpher.com/drive-sdk-and-github/getting-your-apps-scripts-to-github/ "desktop liberation") or [contact me on Gitter](https://gitter.im/desktopliberation/community "Bruce McPherson - GDE")
+For more information on gasgit, see the [desktop liberation site](https://ramblings.mcpher.com/drive-sdk-and-github/migrategasgit/ "desktop liberation")
+
+For more info on SankeySnip try https://ramblings.mcpher.com/?s=SankeySnip or use the issues section of this repo to contact me
+## Library reference
+1-a_HFFFKTuDSYWgSQ5mAJQ4VQ7oQo1OM06oHBn_mGATt5KAajwIULzFd
+
+
 ## Details for Apps Script project SankeySnip
 Where possible directly referenced or sub referenced library sources have been copied to this repository, or you can include the library references shown. 
 The shared link for [SankeySnip is here](https://script.google.com/d/1-a_HFFFKTuDSYWgSQ5mAJQ4VQ7oQo1OM06oHBn_mGATt5KAajwIULzFd/edit?usp=sharing "open in the GAS IDE")
