@@ -1,5 +1,5 @@
 # Google Apps Script Project: SankeySnip
-This repo (SankeySnip) was automatically updated on 8/13/2021, 3:45:10 PM by GasGit
+This repo (SankeySnip) was automatically updated on 1/13/2026, 11:47:37 AM by GasGit
 
 For more information on gasgit, see the [desktop liberation site](https://ramblings.mcpher.com/drive-sdk-and-github/migrategasgit/ "desktop liberation")
 
@@ -15,6 +15,7 @@ The shared link for [SankeySnip is here](https://script.google.com/d/1-a_HFFFKTu
 ### Modules of SankeySnip.gs included in this repo
 *name*|*type*
 --- | --- 
+appsscript| json
 Sankey| server_js
 Utils| server_js
 Process| server_js
@@ -41,7 +42,6 @@ Fiddler| server_js
 Client| server_js
 Server| server_js
 SheetsMore| server_js
-appsscript| json
 ### Directly referenced libraries
 *library*|*identifier*|*key*|*version*|*dev mode*|*source*|
 --- | --- | --- | --- | --- | --- 
